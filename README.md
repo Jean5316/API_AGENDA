@@ -71,14 +71,5 @@ dotnet restore
 dotnet ef database update
 dotnet run
 
-🔥 Próximos passos
-
-Autenticação JWT
-
-Paginação e filtros
-
-Testes unitários
-
-Integração com Angular
 
 
