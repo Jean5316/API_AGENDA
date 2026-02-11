@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using API_AGENDA.Context;
 using API_AGENDA.DTOs;
 using API_AGENDA.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API_AGENDA.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class ContatosController : ControllerBase
@@ -22,6 +24,7 @@ namespace API_AGENDA.Controllers
             _repository = repository;
         }
 
+        
         //GET: api/Contatos 
         //TODOS CONTATOS ATIVOS
         [HttpGet("todosClientes")]
