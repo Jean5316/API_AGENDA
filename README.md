@@ -74,6 +74,7 @@ exp → Data de expiração
 Essas informações são utilizadas para validação e controle de acesso.
 
 🔒 Proteção de Endpoints
+```text
 Endpoints protegidos utilizam o atributo:
 
 [Authorize]
@@ -88,6 +89,8 @@ public IActionResult GetContatos()
 Sem token válido, a API retorna:
 
 401 Unauthorized
+```
+
 🧩 Configuração do JWT
 Configuração realizada no appsettings.json:
 
@@ -98,6 +101,7 @@ Configuração realizada no appsettings.json:
 }
 E configurada no Program.cs usando AddAuthentication e AddJwtBearer.
 
+```text
 📂 Estrutura do projeto
 API_AGENDA/
  ├── Controllers/
@@ -115,6 +119,8 @@ API_AGENDA/
  │   └── TokenService.cs
  ├── Program.cs
  └── appsettings.json
+```
+
 🧪 Testes via Swagger
 Acesse:
 
