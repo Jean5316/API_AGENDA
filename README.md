@@ -139,7 +139,7 @@ AuthGuard para proteção de rotas
 
 Login baseado em JWT
 
-➡️ Repositório do frontend: (adicione o link aqui)
+➡️ Repositório do frontend:https://github.com/Jean5316/agenda-front
 
 📌 Próximos passos
  CRUD completo de contatos
