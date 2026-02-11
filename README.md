@@ -93,13 +93,14 @@ Sem token válido, a API retorna:
 
 🧩 Configuração do JWT
 Configuração realizada no appsettings.json:
-
+```json
 "Jwt": {
   "Key": "CHAVE_SUPER_SECRETA_COM_MAIS_DE_32_CARACTERES",
   "Issuer": "API_AGENDA",
   "Audience": "API_AGENDA_USUARIOS"
 }
 E configurada no Program.cs usando AddAuthentication e AddJwtBearer.
+```
 
 ```text
 📂 Estrutura do projeto
