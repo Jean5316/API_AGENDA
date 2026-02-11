@@ -1,75 +1,158 @@
-# 📒 API de Agenda – ASP.NET Core
+# 📌 API Agenda — ASP.NET Core + JWT
 
-API REST desenvolvida em **ASP.NET Core (.NET 8)** para gerenciamento de contatos de uma agenda, utilizando **Entity Framework Core** com **SQLite** e arquitetura organizada com **Repository Pattern**.
+API REST desenvolvida em **ASP.NET Core** com autenticação via **JWT (JSON Web Token)**.  
+Esta API é consumida por um frontend em **Angular 21**, responsável pelo login, proteção de rotas e gerenciamento de contatos.
 
 ---
 
-## 🚀 Tecnologias Utilizadas
+## 🚀 Tecnologias utilizadas
 
-- ASP.NET Core 8
-- Entity Framework Core
-- SQLite
-- Swagger (OpenAPI)
+- ASP.NET Core Web API
 - C#
-- Git / GitHub
+- Entity Framework Core
+- JWT (JSON Web Token)
+- Swagger (OpenAPI)
+- SQL Server / SQLite
+- Autenticação e Autorização
 
 ---
 
-## 📁 Estrutura do Projeto
+## 🎯 Objetivo do projeto
 
-API_AGENDA
-├── Controllers
-├── Context
-├── Models
-├── DTOs
-├── Repository
-├── Migrations
-├── DB
-└── Program.cs
-
+Fornecer uma API segura para:
+- Autenticação de usuários
+- Controle de acesso via JWT
+- Gerenciamento de uma agenda de contatos
+- Integração com frontend Angular
 
 ---
 
-## 📌 Funcionalidades
+## 🔐 Autenticação JWT
 
-- Criar contato
-- Listar contatos
-- Buscar contato por ID
-- Atualizar contato
-- Remover contato (Hard delete)
-- Marcar contato como favorito
-- Organização por categoria = NAO IMPLEMENTADO
+A API utiliza **JWT Bearer Token** para proteger seus endpoints.
 
----
+### Fluxo de autenticação
 
-## 📡 Endpoints
-
-| Método | Rota | Descrição |
-|------|------|----------|
-| GET | `/api/contatos` | Lista todos os contatos |
-| GET | `/api/contatos/Favoritos` | Lista todos os contatos Favoritos|
-| GET | `/api/contatos/{id}` | Busca contato por ID |
-| POST | `/api/contatos` | Cria um novo contato |
-| PUT | `/api/contatos/{id}` | Atualiza um contato |
-| DELETE | `/api/contatos/{id}` | Remove um contato |
-
-
+1. Usuário envia **email e senha**
+2. API valida as credenciais
+3. API gera um **JWT**
+4. Token é retornado ao frontend
+5. O frontend envia o token automaticamente nas requisições protegidas
 
 ---
 
-## ▶️ Como executar o projeto
+## 🔑 Endpoint de Login
 
-### Pré-requisitos
-- .NET SDK 8+
+### `POST /api/auth/login`
 
-### Passos
+**Request Body:**
+```json
+{
+  "email": "usuario@teste.com",
+  "senha": "123456"
+}
+Response:
 
-```bash
-git clone https://github.com/SEU_USUARIO/api-agenda-aspnet.git
-cd API_AGENDA
-dotnet restore
-dotnet ef database update
-dotnet run
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
 
+🧾 Claims presentes no token
+O JWT contém as seguintes informações:
 
+name → Email do usuário
+
+id → ID do usuário
+
+iss → Issuer da aplicação
+
+aud → Audience configurada
+
+exp → Data de expiração
+
+Essas informações são utilizadas para validação e controle de acesso.
+
+🔒 Proteção de Endpoints
+Endpoints protegidos utilizam o atributo:
+
+[Authorize]
+Exemplo:
+
+[Authorize]
+[HttpGet("contatos")]
+public IActionResult GetContatos()
+{
+    return Ok();
+}
+Sem token válido, a API retorna:
+
+401 Unauthorized
+🧩 Configuração do JWT
+Configuração realizada no appsettings.json:
+
+"Jwt": {
+  "Key": "CHAVE_SUPER_SECRETA_COM_MAIS_DE_32_CARACTERES",
+  "Issuer": "API_AGENDA",
+  "Audience": "API_AGENDA_USUARIOS"
+}
+E configurada no Program.cs usando AddAuthentication e AddJwtBearer.
+
+📂 Estrutura do projeto
+API_AGENDA/
+ ├── Controllers/
+ │   ├── AuthController.cs
+ │   └── ContatosController.cs
+ ├── Entities/
+ │   ├── Usuario.cs
+ │   └── Contato.cs
+ ├── DTOs/
+ │   ├── LoginDto.cs
+ │   └── ContatoDto.cs
+ ├── Data/
+ │   └── AppDbContext.cs
+ ├── Services/
+ │   └── TokenService.cs
+ ├── Program.cs
+ └── appsettings.json
+🧪 Testes via Swagger
+Acesse:
+
+https://localhost:xxxx/swagger
+Faça login via /api/auth/login
+
+Copie o token retornado
+
+Clique em Authorize
+
+Informe:
+
+Bearer SEU_TOKEN
+Teste os endpoints protegidos
+
+🔗 Integração com o Frontend
+Esta API é consumida por um frontend desenvolvido em Angular 21, que utiliza:
+
+Interceptor HTTP para envio automático do token
+
+AuthGuard para proteção de rotas
+
+Login baseado em JWT
+
+➡️ Repositório do frontend: (adicione o link aqui)
+
+📌 Próximos passos
+ CRUD completo de contatos
+
+ Vínculo de contatos por usuário
+
+ Refresh Token
+
+ Roles e permissões
+
+ Logs e tratamento global de erros
+
+👤 Autor
+Desenvolvido por Jean Carlo
+💻 GitHub: https://github.com/Jean5316
 

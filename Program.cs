@@ -63,6 +63,16 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Angular", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
+
 
 // Add DbContext
 builder.Services.AddDbContext<AgendaContext>(options =>
@@ -83,6 +93,7 @@ app.MapControllers();//Obrigaorio para mostrar no swagger
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors("Angular");
 
 app.Run();
 
