@@ -1,0 +1,14 @@
+| Etapa | Prioridade                       |
+| ----- | -------------------------------- |
+| 1     | ⭐ Relacionar Contatos ao Usuario |
+| 2     | ⭐ Criar e Refatorar DTOs         |
+| 3     | ⭐ Validações                     |
+| 4     | 🔥 Busca por nome                |
+| 5     | 🔥 Paginação                     |
+| 6     | 🚀 Refresh Token                 |
+| 7     | 🚀 Roles & Permissões            |
+| 8     | 🛡 Error Handling                |
+| 9     | 🧪 Testes                        |
+| 10    | 🐳 Docker                        |
+| 11    | ☁️ Deploy                        |
+| 12    | 📘 README profissional           |
