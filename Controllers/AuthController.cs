@@ -17,6 +17,7 @@ namespace API_AGENDA.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
+        // Injeção de dependência para o contexto do banco e configuração
         private readonly AgendaContext _context;
         private readonly IConfiguration _config;
 
@@ -26,6 +27,7 @@ namespace API_AGENDA.Controllers
             _config = config;
         }
 
+        // Endpoint para registrar um novo usuário
         [HttpPost("register")]
         public IActionResult Register(RegisterDto dto)
         {
@@ -46,7 +48,7 @@ namespace API_AGENDA.Controllers
             return Ok("Usuário criado com sucesso");
         }
 
-
+        // Endpoint para login e geração de token JWT
         [HttpPost("login")]
         public IActionResult Login(LoginDto login)
         {
@@ -61,6 +63,7 @@ namespace API_AGENDA.Controllers
 
         }
 
+        // Método para gerar o token JWT
         private string GenerateJwtToken(Usuario usuario)
         {
             var jwtSettings = _config.GetSection("Jwt");

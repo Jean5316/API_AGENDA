@@ -16,7 +16,7 @@ namespace API_AGENDA.Controllers
     [Route("api/[controller]")]
     public class ContatosController : ControllerBase
     {
-        //CONSTRUTOR PARA INJEÇÃO DE DEPENDÊNCIA DO CONTEXTO
+        //INJEÇÃO DE DEPENDÊNCIA PARA O REPOSITÓRIO
         private readonly IContatoRepository _repository;
 
         public ContatosController(IContatoRepository repository)
@@ -27,7 +27,7 @@ namespace API_AGENDA.Controllers
         
         //GET: api/Contatos 
         //TODOS CONTATOS ATIVOS
-        [HttpGet("todosClientes")]
+        [HttpGet]
         public async Task<IActionResult> Get()
         {
             var contatos = await _repository.GetAllContatosAsync();
@@ -93,7 +93,7 @@ namespace API_AGENDA.Controllers
 
         //CRIANDO CONTATO
         //POST: api/Contatos
-        [HttpPost("CriarContato")]
+        [HttpPost]
         public async Task<IActionResult> CriarContato(ContatoCriarDto dto)
         {
             var contato = new Contato

@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();//Obrigaorio para mostrar no swagger
+builder.Services.AddEndpointsApiExplorer();//Obrigaorio para mostrar no swagger, habilita a exploração de endpoints para o Swagger
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new () { Title = "API Agenda", Version = "v1" });
@@ -38,11 +38,14 @@ builder.Services.AddSwaggerGen(c =>
             new string[] {}
         }
     });
-});//Obrigaorio para mostrar no swagger
+});//Obrigaorio para mostrar no swagger, configurações para autenticação no swagger
+
 builder.Services.AddControllers();//Obrigaorio para mostrar no swagger
 builder.Services.AddScoped<IContatoRepository, ContatoRepository>();// Injeção de dependência do repositório
-var jwtSettings = builder.Configuration.GetSection("Jwt");
-var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]!);
+
+
+var jwtSettings = builder.Configuration.GetSection("Jwt");// Configurações do JWT
+var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]!);// Chave secreta para assinatura do token
 
 builder.Services.AddAuthentication(options =>
 {
@@ -61,20 +64,21 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = jwtSettings["Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(key)
     };
-});
+});// Configurações de autenticação JWT
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Angular", builder =>
     {
-        builder.AllowAnyOrigin()
+        builder.WithOrigins("http://localhost:4200")
                .AllowAnyMethod()
+               .AllowCredentials()
                .AllowAnyHeader();
     });
-});
+});// Configurações de CORS para permitir requisições do Angular
 
 
-// Add DbContext
+// Add DbContext, configurando para usar SQLite com a string de conexão definida no appsettings.json
 builder.Services.AddDbContext<AgendaContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("ConexaoSqlite")));
 
@@ -87,13 +91,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("Angular");// Habilita o CORS com a política definida para o Angular
+app.UseHttpsRedirection();// Redireciona HTTP para HTTPS
 
-app.UseHttpsRedirection();
+
+app.UseAuthentication();// Habilita a autenticação
+app.UseAuthorization();// Habilita a autorização
 app.MapControllers();//Obrigaorio para mostrar no swagger
-
-app.UseAuthentication();
-app.UseAuthorization();
-app.UseCors("Angular");
 
 app.Run();
 

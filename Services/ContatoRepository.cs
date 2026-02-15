@@ -34,7 +34,7 @@ namespace API_AGENDA.Controllers
 
         public async Task<List<Contato>> GetAllContatosAsync()
         {
-            return await _context.Contatos.Where(c => c.Ativo).ToListAsync();
+            return await _context.Contatos.ToListAsync();
         }
 
         public async Task<Contato?> GetContatoByIdAsync(int id)
