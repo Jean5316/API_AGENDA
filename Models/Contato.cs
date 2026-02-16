@@ -31,5 +31,10 @@ namespace API_AGENDA.Models
         public bool Ativo { get; set; } = true;
         public DateTime DataCriacao { get; set; } = DateTime.Now;
         public DateTime? DataAtualizacao { get; set; }
+
+        //Relacionamento com outra tabela
+        public int UsuarioId { get; set; }
+
+        public Usuario Usuario { get; set; }
     }
 }

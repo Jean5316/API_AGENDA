@@ -21,6 +21,8 @@ namespace API_AGENDA.Models
 
         public string Role { get; set; } = "User";
 
+        public List<Contato> Contatos { get; set; }
+
 
 
     }

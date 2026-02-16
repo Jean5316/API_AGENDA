@@ -18,39 +18,37 @@ namespace API_AGENDA.Controllers
             _context = context;
         }
 
+        public async Task<List<Contato>> GetAllContatosAsync(int usuarioId)
+        {
+            return await _context.Contatos.Where(c => c.Id == usuarioId).ToListAsync();
+        }
+        public async Task<Contato?> GetContatoByIdAsync(int id, int usuarioId)
+        {
+            return await _context.Contatos.FirstOrDefaultAsync(c => c.Id == id && c.UsuarioId == usuarioId);
+        }
+
+        public async Task<List<Contato>> GetFavoritosAsync(int usuarioId)
+        {
+            return await _context.Contatos.Where(c => c.Ativo && c.Favorito && c.UsuarioId == usuarioId).ToListAsync();
+        }
+
+
         public async Task AddContatoAsync(Contato contato)
         {
             _context.Contatos.Add(contato);
             await _context.SaveChangesAsync();
         }
-
-        public async Task DeleteContatoAsync(Contato contato)
-        {
-            
-            _context.Contatos.Remove(contato);
-            await _context.SaveChangesAsync();
-            
-        }
-
-        public async Task<List<Contato>> GetAllContatosAsync()
-        {
-            return await _context.Contatos.ToListAsync();
-        }
-
-        public async Task<Contato?> GetContatoByIdAsync(int id)
-        {
-            return await _context.Contatos.FirstOrDefaultAsync(c => c.Ativo && c.Id == id);
-        }
-
-        public async Task<List<Contato>> GetFavoritosAsync()
-        {
-            return await _context.Contatos.Where(c => c.Ativo && c.Favorito).ToListAsync();
-        }
-
         public async Task UpdateContatoAsync(Contato contato)
         {
             _context.Contatos.Update(contato);
             await _context.SaveChangesAsync();
+        }
+        public async Task DeleteContatoAsync(Contato contato)
+        {
+
+            _context.Contatos.Remove(contato);
+            await _context.SaveChangesAsync();
+
         }
     }
 }

@@ -24,13 +24,21 @@ namespace API_AGENDA.Controllers
             _repository = repository;
         }
 
+        private int getUsuarioId()
+        {
+            var claim = User.FindFirst("id");
+            return int.Parse(claim!.Value);
+        }
+
         
         //GET: api/Contatos 
         //TODOS CONTATOS ATIVOS
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var contatos = await _repository.GetAllContatosAsync();
+
+            var usuarioId = getUsuarioId();
+            var contatos = await _repository.GetAllContatosAsync(usuarioId);
 
             var response = contatos.Select(c => new ContatoResponseDto
             {
@@ -50,7 +58,9 @@ namespace API_AGENDA.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var contato = await _repository.GetContatoByIdAsync(id);
+            var usuarioId = getUsuarioId();
+
+            var contato = await _repository.GetContatoByIdAsync(id, usuarioId);
             if (contato == null)
             {
                 return NotFound();
@@ -65,11 +75,6 @@ namespace API_AGENDA.Controllers
                 Favorito = contato.Favorito
             };
 
-            if (contato == null)
-            {
-                return NotFound();
-            }
-
             return Ok(response);
         }
 
@@ -78,7 +83,8 @@ namespace API_AGENDA.Controllers
         [HttpGet("favoritos")]
         public async Task<IActionResult> GetFavoritos()
         {
-            var contatos = await _repository.GetFavoritosAsync();
+            var usuarioId = getUsuarioId();
+            var contatos = await _repository.GetFavoritosAsync(usuarioId);
             var response = contatos.Select(c => new ContatoResponseDto
             {
                 Id = c.Id,
@@ -96,6 +102,8 @@ namespace API_AGENDA.Controllers
         [HttpPost]
         public async Task<IActionResult> CriarContato(ContatoCriarDto dto)
         {
+            var usuarioId = getUsuarioId();
+
             var contato = new Contato
             {
                 Nome = dto.Nome,
@@ -103,11 +111,12 @@ namespace API_AGENDA.Controllers
                 Telefone = dto.Telefone,
                 Categoria = dto.Categoria,
                 Favorito = dto.Favorito,
+                UsuarioId = usuarioId
             };
 
             await _repository.AddContatoAsync(contato);
 
-            return CreatedAtAction(nameof(GetById), new { id = contato.Id }, contato);
+            return Ok(contato);
         }
 
         //ATUALIZANDO CONTATO
@@ -115,7 +124,9 @@ namespace API_AGENDA.Controllers
         [HttpPut("AtualizarContato/{id}")]
         public async Task<IActionResult> AtualizarContato(int id, ContatoCriarDto dto)
         {
-            var contato = await _repository.GetContatoByIdAsync(id);
+            var usuarioId = getUsuarioId();
+
+            var contato = await _repository.GetContatoByIdAsync(id, usuarioId);
 
             if (contato == null || !contato.Ativo)
             {
@@ -139,7 +150,9 @@ namespace API_AGENDA.Controllers
         [HttpDelete("DeletarContato/{id}")]
         public async Task<IActionResult> DeletarContato(int id)
         {
-            var contato = await _repository.GetContatoByIdAsync(id);
+            var usuarioId = getUsuarioId();
+
+            var contato = await _repository.GetContatoByIdAsync(id, usuarioId);
 
             if (contato == null)
             {

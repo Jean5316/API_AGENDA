@@ -8,12 +8,14 @@ namespace API_AGENDA.Controllers
 {
     public interface IContatoRepository
     {
-        Task<List<Contato>> GetAllContatosAsync();
-        Task<List<Contato>> GetFavoritosAsync();
-        Task<Contato?> GetContatoByIdAsync(int id);
+        Task<List<Contato>> GetAllContatosAsync(int usuarioId);
+        Task<List<Contato>> GetFavoritosAsync(int usuarioId);
+        Task<Contato?> GetContatoByIdAsync(int id, int usuarioId);
         Task AddContatoAsync(Contato contato);
         Task UpdateContatoAsync(Contato contato);
         Task DeleteContatoAsync(Contato contato);
+
+
         
     }
 }
