@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
+using API_AGENDA.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -42,6 +44,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddControllers();//Obrigaorio para mostrar no swagger
 builder.Services.AddScoped<IContatoRepository, ContatoRepository>();// Injeção de dependência do repositório
+builder.Services.AddScoped<IPasswordHasher<Usuario>, PasswordHasher<Usuario>>();//Injeção de dependencia do PasswordHasher
 
 
 var jwtSettings = builder.Configuration.GetSection("Jwt");// Configurações do JWT
@@ -70,9 +73,8 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("Angular", builder =>
     {
-        builder.WithOrigins("http://localhost:4200")
-               .AllowAnyMethod()
-               .AllowCredentials()
+        builder.AllowAnyMethod()
+               .AllowAnyOrigin()
                .AllowAnyHeader();
     });
 });// Configurações de CORS para permitir requisições do Angular
