@@ -1,11 +1,15 @@
 using API_AGENDA.Context;
-using API_AGENDA.Controllers;
-using Microsoft.EntityFrameworkCore;
+using API_AGENDA.Models;
+using API_AGENDA.Repository;
+using API_AGENDA.Repository.Interfaces;
+using API_AGENDA.Services;
+using API_AGENDA.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Microsoft.AspNetCore.Identity;
-using API_AGENDA.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -45,6 +49,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddControllers();//Obrigaorio para mostrar no swagger
 builder.Services.AddScoped<IContatoRepository, ContatoRepository>();// Injeção de dependência do repositório
 builder.Services.AddScoped<IPasswordHasher<Usuario>, PasswordHasher<Usuario>>();//Injeção de dependencia do PasswordHasher
+builder.Services.AddScoped<IContatoService, ContatoService>();//Injeção de dependencia do contato service
 
 
 var jwtSettings = builder.Configuration.GetSection("Jwt");// Configurações do JWT
@@ -92,6 +97,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+
+
 
 app.UseCors("Angular");// Habilita o CORS com a política definida para o Angular
 app.UseHttpsRedirection();// Redireciona HTTP para HTTPS

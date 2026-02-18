@@ -4,9 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using API_AGENDA.Context;
 using API_AGENDA.Models;
+using API_AGENDA.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace API_AGENDA.Controllers
+namespace API_AGENDA.Repository
 {
     public class ContatoRepository : IContatoRepository
     {
@@ -20,7 +21,7 @@ namespace API_AGENDA.Controllers
 
         public async Task<List<Contato>> GetAllContatosAsync(int usuarioId)
         {
-            return await _context.Contatos.Where(c => c.Id == usuarioId).ToListAsync();
+            return await _context.Contatos.Where(c => c.UsuarioId == usuarioId).ToListAsync();
         }
         public async Task<Contato?> GetContatoByIdAsync(int id, int usuarioId)
         {
@@ -43,12 +44,12 @@ namespace API_AGENDA.Controllers
             _context.Contatos.Update(contato);
             await _context.SaveChangesAsync();
         }
-        public async Task DeleteContatoAsync(Contato contato)
+        public async Task<bool> DeleteContatoAsync(Contato contato)
         {
 
             _context.Contatos.Remove(contato);
-            await _context.SaveChangesAsync();
 
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }

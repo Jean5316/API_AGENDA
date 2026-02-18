@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using API_AGENDA.Context;
 using API_AGENDA.DTOs;
 using API_AGENDA.Models;
+using API_AGENDA.Repository.Interfaces;
+using API_AGENDA.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,11 +19,11 @@ namespace API_AGENDA.Controllers
     public class ContatosController : ControllerBase
     {
         //INJEÇÃO DE DEPENDÊNCIA PARA O REPOSITÓRIO
-        private readonly IContatoRepository _repository;
+        private readonly IContatoService _service;
 
-        public ContatosController(IContatoRepository repository)
+        public ContatosController(IContatoService service)
         {
-            _repository = repository;
+            _service = service;
         }
 
         private int getUsuarioId()
@@ -36,21 +38,12 @@ namespace API_AGENDA.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-
             var usuarioId = getUsuarioId();
-            var contatos = await _repository.GetAllContatosAsync(usuarioId);
+            var contatos = await _service.ListarContatos(usuarioId);
 
-            var response = contatos.Select(c => new ContatoResponseDto
-            {
-                Id = c.Id,
-                Nome = c.Nome,
-                Email = c.Email,
-                Telefone = c.Telefone,
-                Categoria = c.Categoria,
-                Favorito = c.Favorito
-                
-            });
-            return Ok(response);
+            return Ok(contatos);
+
+
         }
 
         //GET: api/Contatos/1
@@ -59,23 +52,14 @@ namespace API_AGENDA.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var usuarioId = getUsuarioId();
-
-            var contato = await _repository.GetContatoByIdAsync(id, usuarioId);
-            if (contato == null)
+            var contato = await _service.ListarContato(id, usuarioId);
+            if(contato == null)
             {
-                return NotFound();
+                return NotFound("Contato não encontrado");
             }
-            var response = new ContatoResponseDto
-            {
-                Id = contato.Id,
-                Nome = contato.Nome,
-                Email = contato.Email,
-                Telefone = contato.Telefone,
-                Categoria = contato.Categoria,
-                Favorito = contato.Favorito
-            };
+            return Ok(contato);
 
-            return Ok(response);
+           
         }
 
         //APENAS FAVORITOS
@@ -84,17 +68,10 @@ namespace API_AGENDA.Controllers
         public async Task<IActionResult> GetFavoritos()
         {
             var usuarioId = getUsuarioId();
-            var contatos = await _repository.GetFavoritosAsync(usuarioId);
-            var response = contatos.Select(c => new ContatoResponseDto
-            {
-                Id = c.Id,
-                Nome = c.Nome,
-                Email = c.Email,
-                Telefone = c.Telefone,
-                Categoria = c.Categoria,
-                Favorito = c.Favorito
-            });
-            return Ok(response);
+
+            var contatos = await _service.ListarFavoritos(usuarioId);
+            return Ok(contatos);
+            
         }
 
         //CRIANDO CONTATO
@@ -104,19 +81,10 @@ namespace API_AGENDA.Controllers
         {
             var usuarioId = getUsuarioId();
 
-            var contato = new Contato
-            {
-                Nome = dto.Nome,
-                Email = dto.Email,
-                Telefone = dto.Telefone,
-                Categoria = dto.Categoria,
-                Favorito = dto.Favorito,
-                UsuarioId = usuarioId
-            };
+            await _service.CriarContato(dto, usuarioId);
+            return Ok("Usuario criado com sucesso!");
 
-            await _repository.AddContatoAsync(contato);
-
-            return Ok(contato);
+            
         }
 
         //ATUALIZANDO CONTATO
@@ -125,24 +93,9 @@ namespace API_AGENDA.Controllers
         public async Task<IActionResult> AtualizarContato(int id, ContatoCriarDto dto)
         {
             var usuarioId = getUsuarioId();
-
-            var contato = await _repository.GetContatoByIdAsync(id, usuarioId);
-
-            if (contato == null || !contato.Ativo)
-            {
-                return NotFound();
-            }
-
-            contato.Nome = dto.Nome;
-            contato.Email = dto.Email;
-            contato.Telefone = dto.Telefone;
-            contato.Categoria = dto.Categoria;
-            contato.Favorito = dto.Favorito;
-            contato.DataAtualizacao = DateTime.Now;
-
-            await _repository.UpdateContatoAsync(contato);
-
-            return NoContent();
+            await _service.AtualizarContato(dto, id, usuarioId);
+            return Ok("Usuario atualizado!");
+            
         }
 
         //DELETANDO CONTATO
@@ -152,18 +105,15 @@ namespace API_AGENDA.Controllers
         {
             var usuarioId = getUsuarioId();
 
-            var contato = await _repository.GetContatoByIdAsync(id, usuarioId);
-
-            if (contato == null)
+            var deletado = await _service.DeletarContato(id, usuarioId);
+            if (!deletado)
             {
-                return NotFound();
+                return NotFound("Contato não encontrado");
             }
 
-            contato.Ativo = false;
-
-            await _repository.DeleteContatoAsync(contato);
-
             return NoContent();
+
+            
         }
     }
 }

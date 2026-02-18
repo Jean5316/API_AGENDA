@@ -1,7 +1,7 @@
 | Etapa | Prioridade                       |
 | ----- | -------------------------------- |
 | 1     | ⭐ Relacionar Contatos ao Usuario | OK
-| 2		| * Implementar Services Corretamente 
+| 2		| * Implementar Services Corretamente OK
 | 3     | ⭐ Criar e Refatorar DTOs         | 
 | 4     | ⭐ Validações                     |
 | 5     | 🔥 Busca por nome                | 

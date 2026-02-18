@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using API_AGENDA.Models;
 
-namespace API_AGENDA.Controllers
+namespace API_AGENDA.Repository.Interfaces
 {
     public interface IContatoRepository
     {
@@ -13,7 +13,7 @@ namespace API_AGENDA.Controllers
         Task<Contato?> GetContatoByIdAsync(int id, int usuarioId);
         Task AddContatoAsync(Contato contato);
         Task UpdateContatoAsync(Contato contato);
-        Task DeleteContatoAsync(Contato contato);
+        Task<bool> DeleteContatoAsync(Contato contato);
 
 
         
