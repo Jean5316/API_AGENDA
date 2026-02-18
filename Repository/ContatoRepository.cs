@@ -44,12 +44,12 @@ namespace API_AGENDA.Repository
             _context.Contatos.Update(contato);
             await _context.SaveChangesAsync();
         }
-        public async Task<bool> DeleteContatoAsync(Contato contato)
+        public async Task DeleteContatoAsync(Contato contato)
         {
 
             _context.Contatos.Remove(contato);
 
-            return await _context.SaveChangesAsync() > 0;
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace API_AGENDA.Services.Interfaces
         Task<ContatoResponseDto> ListarContato(int id, int usuarioId);
         Task<List<ContatoResponseDto>> ListarFavoritos(int usuarioId);
         Task CriarContato(ContatoCriarDto dto, int usuarioId);
-        Task AtualizarContato(ContatoCriarDto dto, int id, int usuarioId );
+        Task<bool> AtualizarContato(ContatoCriarDto dto, int id, int usuarioId );
         Task<bool> DeletarContato(int id, int usuarioId);
     }
 }

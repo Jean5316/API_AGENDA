@@ -18,13 +18,13 @@ namespace API_AGENDA.Services
 
         
 
-        public async Task AtualizarContato(ContatoCriarDto dto, int id, int usuarioId)
+        public async Task<bool> AtualizarContato(ContatoCriarDto dto, int id, int usuarioId)
         {
             var contato = await _repository.GetContatoByIdAsync(id, usuarioId);
 
             if (contato == null || !contato.Ativo)
             {
-                throw new Exception("Contato não encontrado");
+                return false;
             }
 
             contato.Nome = dto.Nome;
@@ -35,6 +35,7 @@ namespace API_AGENDA.Services
             contato.DataAtualizacao = DateTime.Now;
 
             await _repository.UpdateContatoAsync(contato);
+            return true;
 
             
         }

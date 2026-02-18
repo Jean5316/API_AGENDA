@@ -93,8 +93,12 @@ namespace API_AGENDA.Controllers
         public async Task<IActionResult> AtualizarContato(int id, ContatoCriarDto dto)
         {
             var usuarioId = getUsuarioId();
-            await _service.AtualizarContato(dto, id, usuarioId);
-            return Ok("Usuario atualizado!");
+            var atualizado = await _service.AtualizarContato(dto, id, usuarioId);
+            if (!atualizado)
+            {
+                return NotFound("Contato não encontrado");
+            }
+            return NoContent();
             
         }
 

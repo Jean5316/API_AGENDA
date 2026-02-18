@@ -13,7 +13,7 @@ namespace API_AGENDA.Repository.Interfaces
         Task<Contato?> GetContatoByIdAsync(int id, int usuarioId);
         Task AddContatoAsync(Contato contato);
         Task UpdateContatoAsync(Contato contato);
-        Task<bool> DeleteContatoAsync(Contato contato);
+        Task DeleteContatoAsync(Contato contato);
 
 
         
