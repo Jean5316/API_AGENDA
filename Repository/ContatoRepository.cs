@@ -51,5 +51,11 @@ namespace API_AGENDA.Repository
 
             await _context.SaveChangesAsync();
         }
+
+        public async Task<List<Contato>> GetName(string Nome, int usuarioId)
+        {
+           return await _context.Contatos.Where(c => c.UsuarioId == usuarioId && c.Nome.ToLower().Contains(Nome.ToLower())).ToListAsync();
+
+        }
     }
 }

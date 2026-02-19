@@ -51,6 +51,7 @@ namespace API_AGENDA.Services
                 Favorito = dto.Favorito,
                 UsuarioId = usuarioId
             };
+            
 
             await _repository.AddContatoAsync(contato);
 
@@ -133,6 +134,20 @@ namespace API_AGENDA.Services
                 Favorito = c.Favorito
             }).ToList();
             
+        }
+
+        public async Task<List<ContatoResponseDto>> ListarPorNome(string Nome, int usuarioId)
+        {
+            var contatos = await _repository.GetName(Nome, usuarioId);
+            return contatos.Select(c => new ContatoResponseDto
+            {
+                Id = c.Id,
+                Nome = c.Nome,
+                Email = c.Email,
+                Telefone = c.Telefone,
+                Categoria = c.Categoria,
+                Favorito = c.Favorito
+            }).ToList();
         }
     }
 }

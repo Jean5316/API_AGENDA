@@ -14,6 +14,7 @@ namespace API_AGENDA.Repository.Interfaces
         Task AddContatoAsync(Contato contato);
         Task UpdateContatoAsync(Contato contato);
         Task DeleteContatoAsync(Contato contato);
+        Task<List<Contato>> GetName(string Nome, int usuarioId);
 
 
         

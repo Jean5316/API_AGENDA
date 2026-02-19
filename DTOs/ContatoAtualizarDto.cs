@@ -11,6 +11,8 @@ namespace API_AGENDA.DTOs
         [Required]
         [Phone]
         [MaxLength(20)]
+        [RegularExpression(@"^\(?\d{2}\)?\d{4,5}-?\d{4}$",
+        ErrorMessage = "Telefone inválido.")]
         public string Telefone { get; set; } = string.Empty;
         [EmailAddress]
         [MaxLength(150)]

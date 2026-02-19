@@ -49,8 +49,8 @@ namespace API_AGENDA.Controllers
 
         //GET: api/Contatos/1
         //APENAS UM CONTATO POR ID
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        [HttpGet("contato")]
+        public async Task<IActionResult> GetById([FromQuery]int id)
         {
             var usuarioId = getUsuarioId();
             var contato = await _service.ListarContato(id, usuarioId);
@@ -74,6 +74,23 @@ namespace API_AGENDA.Controllers
             return Ok(contatos);
             
         }
+
+        //BUSCAR POR NOME
+        //GET: api/contatos/jean
+        [HttpGet("buscar")]
+        public async Task<ActionResult> GetNome([FromQuery]string nome)
+        {
+            var ususarioId = getUsuarioId();
+            var contatos = await _service.ListarPorNome(nome, ususarioId);
+            if (contatos == null)
+            {
+                return NotFound("Contato não encontrado");
+            }
+
+            return Ok(contatos);
+
+        }
+
 
         //CRIANDO CONTATO
         //POST: api/Contatos
