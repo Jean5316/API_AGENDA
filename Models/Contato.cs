@@ -13,19 +13,19 @@ namespace API_AGENDA.Models
 
         [Required]
         [MaxLength(100)] 
-        public string Nome { get; set; }
+        public string Nome { get; set; } = string.Empty;
 
         [Required]
         [Phone]
         [MaxLength(20)]
-        public string Telefone { get; set; }
+        public string Telefone { get; set; } = string.Empty;
 
         [EmailAddress]
         [MaxLength(150)]
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
         [MaxLength(50)]
-        public string Categoria { get; set; }
+        public string Categoria { get; set; } = string.Empty;
 
         public bool Favorito { get; set; } = false;
         public bool Ativo { get; set; } = true;
@@ -35,6 +35,6 @@ namespace API_AGENDA.Models
         //Relacionamento com outra tabela
         public int UsuarioId { get; set; }
 
-        public Usuario Usuario { get; set; }
+        public Usuario Usuario { get; set; } 
     }
 }

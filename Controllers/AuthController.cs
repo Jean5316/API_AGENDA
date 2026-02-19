@@ -89,7 +89,7 @@ namespace API_AGENDA.Controllers
             var claims = new[]
             {
                 new Claim(ClaimTypes.Name, usuario.Email),
-                new Claim(ClaimTypes.Email, usuario.Role),
+                new Claim(ClaimTypes.Role, usuario.Role),
                 new Claim("id", usuario.Id.ToString()),
             };
 
@@ -98,7 +98,7 @@ namespace API_AGENDA.Controllers
                 issuer: jwtSettings["Issuer"],
                 audience: jwtSettings["Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddHours(1),
+                expires: DateTime.UtcNow.AddMinutes(30),
                 signingCredentials: new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)//credencias de assinatura do token
             );
             return new JwtSecurityTokenHandler().WriteToken(token);//retornando token gerado

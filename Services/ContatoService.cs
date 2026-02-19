@@ -18,7 +18,7 @@ namespace API_AGENDA.Services
 
         
 
-        public async Task<bool> AtualizarContato(ContatoCriarDto dto, int id, int usuarioId)
+        public async Task<bool> AtualizarContato(ContatoAtualizarDto dto, int id, int usuarioId)
         {
             var contato = await _repository.GetContatoByIdAsync(id, usuarioId);
 
@@ -40,7 +40,7 @@ namespace API_AGENDA.Services
             
         }
 
-        public async Task CriarContato(ContatoCriarDto dto, int usuarioId)
+        public async Task<ContatoResponseDto> CriarContato(ContatoCriarDto dto, int usuarioId)
         {
             var contato = new Contato
             {
@@ -53,6 +53,16 @@ namespace API_AGENDA.Services
             };
 
             await _repository.AddContatoAsync(contato);
+
+            return new ContatoResponseDto
+            {
+                Id = contato.Id,
+                Nome = contato.Nome,
+                Telefone = contato.Telefone,
+                Categoria = contato.Categoria,
+                Favorito = contato.Favorito,
+
+            };
 
             
         }

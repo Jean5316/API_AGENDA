@@ -1,15 +1,16 @@
-| Etapa | Prioridade                       |
-| ----- | -------------------------------- |
-| 1     | ⭐ Relacionar Contatos ao Usuario | OK
-| 2		| * Implementar Services Corretamente OK
-| 3     | ⭐ Criar e Refatorar DTOs         | 
-| 4     | ⭐ Validações                     |
-| 5     | 🔥 Busca por nome                | 
-| 6     | 🔥 Paginação                     |
-| 7     | 🚀 Refresh Token                 |
-| 8     | 🚀 Roles & Permissões            |
-| 9     | 🛡 Error Handling                |
-| 10     | 🧪 Testes                        |
-| 11    | 🐳 Docker                        |
-| 12    | ☁️ Deploy                        |
-| 13    | 📘 README profissional           |
+| Etapa | Prioridade							| Concluido |
+| ----- | -------------------------------------	| ---------	|
+| 1     | ⭐ Relacionar Contatos ao Usuario		|	OK		|
+| 2		| * Implementar Services Corretamente	|	OK		|
+| 3     | ⭐ Criar e Refatorar DTOs				|	OK		|
+| 4     | ⭐ Validações							|			|
+| 5     | 🔥 Busca por nome						|			|
+| 6     | 🔥 Paginação							|			|
+| 7		| Implementar Area Administrativa		|			|
+| 8     | 🚀 Refresh Token						|			|
+| 9     | 🚀 Roles & Permissões					|			|
+| 10     | 🛡 Error Handling						|			|
+| 11    | 🧪 Testes								|			|
+| 12    | 🐳 Docker								|			|
+| 13    | ☁️ Deploy								|			|
+| 14    | 📘 README profissional					|			|

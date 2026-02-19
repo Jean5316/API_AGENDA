@@ -8,8 +8,8 @@ namespace API_AGENDA.Services.Interfaces
         Task<List<ContatoResponseDto>> ListarContatos(int usuarioId);
         Task<ContatoResponseDto> ListarContato(int id, int usuarioId);
         Task<List<ContatoResponseDto>> ListarFavoritos(int usuarioId);
-        Task CriarContato(ContatoCriarDto dto, int usuarioId);
-        Task<bool> AtualizarContato(ContatoCriarDto dto, int id, int usuarioId );
+        Task<ContatoResponseDto> CriarContato(ContatoCriarDto dto, int usuarioId);
+        Task<bool> AtualizarContato(ContatoAtualizarDto dto, int id, int usuarioId );
         Task<bool> DeletarContato(int id, int usuarioId);
     }
 }

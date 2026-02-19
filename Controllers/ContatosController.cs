@@ -32,6 +32,7 @@ namespace API_AGENDA.Controllers
             return int.Parse(claim!.Value);
         }
 
+
         
         //GET: api/Contatos 
         //TODOS CONTATOS ATIVOS
@@ -81,8 +82,8 @@ namespace API_AGENDA.Controllers
         {
             var usuarioId = getUsuarioId();
 
-            await _service.CriarContato(dto, usuarioId);
-            return Ok("Usuario criado com sucesso!");
+            var contato = await _service.CriarContato(dto, usuarioId);
+            return Ok(contato);
 
             
         }
@@ -90,7 +91,7 @@ namespace API_AGENDA.Controllers
         //ATUALIZANDO CONTATO
         //PUT: api/Contatos/1
         [HttpPut("AtualizarContato/{id}")]
-        public async Task<IActionResult> AtualizarContato(int id, ContatoCriarDto dto)
+        public async Task<IActionResult> AtualizarContato(int id, ContatoAtualizarDto dto)
         {
             var usuarioId = getUsuarioId();
             var atualizado = await _service.AtualizarContato(dto, id, usuarioId);
