@@ -14,3 +14,16 @@
 | 12    | 🐳 Docker								|			|
 | 13    | ☁️ Deploy								|			|
 | 14    | 📘 README profissional					|			|
+
+
+//Anotações de codigo
+@"^\(\d{2}\)\d{4,5}-\d{4}$"
+
+@ = String Literal evita escrever igual 
+^ = Inicio da sting
+\( = (
+\d = numeros de 0-9
+{2} = 2 digitos
+\) = )
+? = caracter que indique que é opicional
+$ = fim da string
