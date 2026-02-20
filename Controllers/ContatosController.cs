@@ -49,8 +49,8 @@ namespace API_AGENDA.Controllers
 
         //GET: api/Contatos/1
         //APENAS UM CONTATO POR ID
-        [HttpGet("contato")]
-        public async Task<IActionResult> GetById([FromQuery]int id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
         {
             var usuarioId = getUsuarioId();
             var contato = await _service.ListarContato(id, usuarioId);
