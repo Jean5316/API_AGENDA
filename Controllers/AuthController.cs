@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using API_AGENDA.Context;
 using API_AGENDA.DTOs;
 using API_AGENDA.Models;
+using API_AGENDA.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,14 +23,14 @@ namespace API_AGENDA.Controllers
     {
         // Injeção de dependência para o contexto do banco e configuração
         private readonly AgendaContext _context;
-        private readonly IConfiguration _config;
         private readonly IPasswordHasher<Usuario> _passwordHasher;
+        private readonly ItokenService _tokenService;
 
-        public AuthController(AgendaContext context, IConfiguration config, IPasswordHasher<Usuario> passwordHasher)
+        public AuthController(AgendaContext context, IPasswordHasher<Usuario> passwordHasher, ItokenService token)
         {
             _context = context;
-            _config = config;
             _passwordHasher = passwordHasher;
+            _tokenService = token;
         }
 
         // Endpoint para registrar um novo usuário
@@ -36,13 +38,13 @@ namespace API_AGENDA.Controllers
         public async Task<IActionResult> Register(RegisterDto dto)
         {
             if (await _context.Usuarios.AnyAsync(u => u.Email == dto.Email))
-            return BadRequest("Email já cadastrado");
+                return BadRequest("Email já cadastrado");
 
             var usuario = new Usuario
             {
-            Name = dto.Nome,
-            Email = dto.Email,
-            Role = "User"
+                Name = dto.Nome,
+                Email = dto.Email,
+                Role = "User"
             };
 
             //cria a hash da senha
@@ -60,50 +62,84 @@ namespace API_AGENDA.Controllers
         {
             var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == login.Email);//verifica email
             if (usuario == null) return Unauthorized("Email ou senha Invalidos");
-            
+
             var res = _passwordHasher.VerifyHashedPassword(
                 usuario,
                 usuario.SenhaHash,
                 login.Senha
                 );//verifica senha
 
-            if(res == PasswordVerificationResult.Failed)
+            if (res == PasswordVerificationResult.Failed)
             {
                 return Unauthorized("Credenciais Invalidas");
             }//verifica se email e senha estao corretos
 
-            var token = GenerateJwtToken(usuario);
+            //token gerado acess
+            var token = _tokenService.CreateToken(usuario);
 
-            return Ok(new { Token = token });
-
-        }
-
-        // Método para gerar o token JWT
-        private string GenerateJwtToken(Usuario usuario)
-        {
-
-            var jwtSettings = _config.GetSection("Jwt");//informando Jwt do Appsettings
-            var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]!);//chave de segurança para assinar o token
-
-            //claims informações que nao no token
-            var claims = new[]
+            //refresh token gerado
+            var refreshToken = _tokenService.refreshToken();
+            
+            var refreshTokenModel = new RefreshToken
             {
-                new Claim(ClaimTypes.Name, usuario.Email),
-                new Claim(ClaimTypes.Role, usuario.Role),
-                new Claim("id", usuario.Id.ToString()),
+                Token = refreshToken,
+                ExpiraEm = DateTime.UtcNow.AddDays(1),
+                Revogado = false,
+                UsuarioId = usuario.Id
             };
 
-            //gerando token
-            var token = new JwtSecurityToken(
-                issuer: jwtSettings["Issuer"],
-                audience: jwtSettings["Audience"],
-                claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(30),
-                signingCredentials: new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)//credencias de assinatura do token
-            );
-            return new JwtSecurityTokenHandler().WriteToken(token);//retornando token gerado
+            _context.RefreshTokens.Add(refreshTokenModel);
+            await _context.SaveChangesAsync();
+
+            return Ok(new LoginResponseDto
+            {
+                Token = token,
+                RefreshToken = refreshToken
+            });
+
         }
-            
-        
+
+        [HttpPost("refresh")]
+        public async Task<ActionResult> RefreshToken(RefreshRequestDto dto)
+        {
+            var refresTokenDB= await _context.RefreshTokens.Include(r => r.Usuario).FirstOrDefaultAsync(r => r.Token == dto.RefreshToken);
+            if(refresTokenDB == null || refresTokenDB.Revogado || refresTokenDB.ExpiraEm < DateTime.UtcNow)
+            {
+                return Unauthorized("Refresh token inválido");
+            }
+
+            //gera novo token acess
+            var token = _tokenService.CreateToken(refresTokenDB.Usuario);
+
+            //revoga o refresh token antigo
+            refresTokenDB.Revogado = true;
+
+            //Gera um novo refresh token
+            var novoRefreshToken = _tokenService.refreshToken();
+            var refreshTokenModel = new RefreshToken
+            {
+                Token = novoRefreshToken,
+                ExpiraEm = DateTime.UtcNow.AddHours(1),
+                Revogado = false,
+                UsuarioId = refresTokenDB.UsuarioId
+            };
+
+            _context.RefreshTokens.Add(refreshTokenModel);
+            await _context.SaveChangesAsync();
+
+            return Ok(new LoginResponseDto
+            {
+                Token = token,
+                RefreshToken = novoRefreshToken
+            });
+
+
+
+
+
+        }
+
+
+
     }
 }

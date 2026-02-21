@@ -50,6 +50,7 @@ builder.Services.AddControllers();//Obrigaorio para mostrar no swagger
 builder.Services.AddScoped<IContatoRepository, ContatoRepository>();// Injeção de dependência do repositório
 builder.Services.AddScoped<IPasswordHasher<Usuario>, PasswordHasher<Usuario>>();//Injeção de dependencia do PasswordHasher
 builder.Services.AddScoped<IContatoService, ContatoService>();//Injeção de dependencia do contato service
+builder.Services.AddScoped<ItokenService, TokenService>();//Injeção de dependencia do token service
 
 
 var jwtSettings = builder.Configuration.GetSection("Jwt");// Configurações do JWT

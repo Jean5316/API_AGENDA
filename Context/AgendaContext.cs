@@ -11,6 +11,7 @@ namespace API_AGENDA.Context
 
         public DbSet<Contato> Contatos { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
     }
     
 }
