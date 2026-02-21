@@ -148,6 +148,34 @@ Ao rodar a aplicação, acesse `/swagger` para testar endpoints. Para endpoints 
 
 ---
 
+## Endpoints principais
+
+Abaixo uma visão geral dos endpoints mais importantes desta API. Todos os endpoints (exceto os de autenticação) exigem um token JWT válido via header `Authorization: Bearer {token}`.
+
+- Autenticação
+  - `POST /api/auth/login` — autentica usuário e retorna um JWT.
+    - Body exemplo:
+      ```json
+      { "email": "usuario@teste.com", "senha": "123456" }
+      ```
+
+- Contatos (`ContatosController`)
+  - `GET /api/contatos` — lista todos os contatos do usuário (ativos).
+  - `GET /api/contatos/{id}` — obtém um contato por ID (do usuário autenticado).
+  - `GET /api/contatos/favoritos` — lista apenas contatos marcados como favoritos.
+  - `GET /api/contatos/buscar?nome={nome}` — busca contatos cujo nome contenha o termo informado.
+    - Exemplo: `/api/contatos/buscar?nome=jean`
+  - `GET /api/contatos/paginacao?pagina={n}&tamanhoPagina={m}` — listagem paginada. Parâmetros opcionais: `pagina` (padrão 1) e `tamanhoPagina` (padrão 2).
+  - `POST /api/contatos` — cria um novo contato.
+    - Body: objeto `ContatoCriarDto` (nome, telefone, email, etc.).
+  - `PUT /api/contatos/AtualizarContato/{id}` — atualiza um contato existente por ID.
+    - Body: objeto `ContatoAtualizarDto`.
+  - `DELETE /api/contatos/DeletarContato/{id}` — remove (ou marca como removido) um contato por ID.
+
+Observação: os nomes exatos dos DTOs e propriedades seguem a implementação do projeto. Use o Swagger para ver exemplos e esquemas dos bodies.
+
+---
+
 ## Integração com frontend
 
 O frontend em Angular utiliza um `HTTP Interceptor` para adicionar automaticamente o header `Authorization` nas requisições e `AuthGuard` para proteger rotas.
