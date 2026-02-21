@@ -136,6 +136,32 @@ namespace API_AGENDA.Services
             
         }
 
+        public async Task<PaginacaoResponse<ContatoResponseDto>> ListarPaginadoAsync(int usuarioId, int pagina, int tamanhoPagina)
+        {
+            if (pagina <= 0) pagina = 1;
+
+            if (tamanhoPagina <= 0 || tamanhoPagina > 50) tamanhoPagina = 10;
+
+            var resultado = await _repository.ListaPaginadoAsync(usuarioId, pagina, tamanhoPagina);
+            
+            return new PaginacaoResponse<ContatoResponseDto>
+            {
+                Pagina = resultado.Pagina,
+                TamanhoPagina = resultado.TamanhoPagina,
+                TotalRegistros = resultado.TotalRegistros,
+                TotalPaginas = resultado.TotalPaginas,
+                Dados = resultado.Dados.Select(c => new ContatoResponseDto
+                {
+                    Id = c.Id,
+                    Nome = c.Nome,
+                    Email = c.Email,
+                    Telefone = c.Telefone,
+                    Categoria = c.Categoria,
+                    Favorito = c.Favorito
+                }).ToList()
+            };
+        }
+
         public async Task<List<ContatoResponseDto>> ListarPorNome(string Nome, int usuarioId)
         {
             var contatos = await _repository.GetName(Nome, usuarioId);

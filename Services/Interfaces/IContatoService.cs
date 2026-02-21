@@ -12,5 +12,6 @@ namespace API_AGENDA.Services.Interfaces
         Task<bool> AtualizarContato(ContatoAtualizarDto dto, int id, int usuarioId );
         Task<bool> DeletarContato(int id, int usuarioId);
         Task<List<ContatoResponseDto>> ListarPorNome(string Nome, int usuarioId);
+        Task<PaginacaoResponse<ContatoResponseDto>> ListarPaginadoAsync(int usuarioId, int pagina, int tamanhoPagina);
     }
 }

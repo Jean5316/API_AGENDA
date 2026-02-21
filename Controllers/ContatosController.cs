@@ -1,15 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using API_AGENDA.Context;
 using API_AGENDA.DTOs;
 using API_AGENDA.Models;
 using API_AGENDA.Repository.Interfaces;
+using API_AGENDA.Services;
 using API_AGENDA.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace API_AGENDA.Controllers
 {
@@ -33,7 +34,7 @@ namespace API_AGENDA.Controllers
         }
 
 
-        
+
         //GET: api/Contatos 
         //TODOS CONTATOS ATIVOS
         [HttpGet]
@@ -54,13 +55,13 @@ namespace API_AGENDA.Controllers
         {
             var usuarioId = getUsuarioId();
             var contato = await _service.ListarContato(id, usuarioId);
-            if(contato == null)
+            if (contato == null)
             {
                 return NotFound("Contato não encontrado");
             }
             return Ok(contato);
 
-           
+
         }
 
         //APENAS FAVORITOS
@@ -72,13 +73,13 @@ namespace API_AGENDA.Controllers
 
             var contatos = await _service.ListarFavoritos(usuarioId);
             return Ok(contatos);
-            
+
         }
 
         //BUSCAR POR NOME
         //GET: api/contatos/jean
         [HttpGet("buscar")]
-        public async Task<ActionResult> GetNome([FromQuery]string nome)
+        public async Task<ActionResult> GetNome([FromQuery] string nome)
         {
             var ususarioId = getUsuarioId();
             var contatos = await _service.ListarPorNome(nome, ususarioId);
@@ -91,6 +92,17 @@ namespace API_AGENDA.Controllers
 
         }
 
+        //PAGINACAO
+        [HttpGet("paginacao")]
+        public async Task<IActionResult> Listar(int pagina = 1, int tamanhoPagina = 2)
+        {
+            var usuarioId = getUsuarioId();
+            var resultado = await _service.ListarPaginadoAsync(usuarioId, pagina, tamanhoPagina);
+
+            return Ok(resultado);
+        }
+
+
 
         //CRIANDO CONTATO
         //POST: api/Contatos
@@ -102,7 +114,7 @@ namespace API_AGENDA.Controllers
             var contato = await _service.CriarContato(dto, usuarioId);
             return Ok(contato);
 
-            
+
         }
 
         //ATUALIZANDO CONTATO
@@ -117,7 +129,7 @@ namespace API_AGENDA.Controllers
                 return NotFound("Contato não encontrado");
             }
             return NoContent();
-            
+
         }
 
         //DELETANDO CONTATO
@@ -135,7 +147,7 @@ namespace API_AGENDA.Controllers
 
             return NoContent();
 
-            
+
         }
     }
 }

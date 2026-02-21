@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API_AGENDA.Context;
+using API_AGENDA.DTOs;
 using API_AGENDA.Models;
 using API_AGENDA.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -56,6 +57,27 @@ namespace API_AGENDA.Repository
         {
            return await _context.Contatos.Where(c => c.UsuarioId == usuarioId && c.Nome.ToLower().StartsWith(Nome.ToLower())).ToListAsync();
 
+        }
+
+        public async Task<PaginacaoResponse<Contato>> ListaPaginadoAsync(int usuarioId, int pagina, int tamanhoPagina)
+        {
+            var query = _context.Contatos.Where(c => c.UsuarioId == usuarioId);
+            
+            var totalRegistros = await query.CountAsync();
+
+            var dados = await query.OrderBy(c => c.Nome)
+                                   .Skip((pagina - 1) * tamanhoPagina)
+                                   .Take(tamanhoPagina)
+                                   .ToListAsync();
+
+            return new PaginacaoResponse<Contato>
+            {
+                Pagina = pagina,
+                TamanhoPagina = tamanhoPagina,
+                TotalRegistros = totalRegistros,
+                TotalPaginas = (int)Math.Ceiling((double)totalRegistros / tamanhoPagina),
+                Dados = dados
+            };
         }
     }
 }
