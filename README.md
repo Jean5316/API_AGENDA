@@ -1,13 +1,13 @@
 # 📌 API Agenda — ASP.NET Core + JWT
 
-API REST desenvolvida em **ASP.NET Core** com autenticação via **JWT (JSON Web Token)**.  
+API REST desenvolvida em **ASP.NET Core** com autenticação via **JWT (JSON Web Token)**.
 Esta API é consumida por um frontend em **Angular 21**, responsável pelo login, proteção de rotas e gerenciamento de contatos.
 
 ---
 
 ## 🚀 Tecnologias utilizadas
 
-- ASP.NET Core Web API
+- ASP.NET Core (.NET 10)
 - C#
 - Entity Framework Core
 - JWT (JSON Web Token)
@@ -27,83 +27,97 @@ Fornecer uma API segura para:
 
 ---
 
-## 🔐 Autenticação JWT
+## Requisitos
 
-A API utiliza **JWT Bearer Token** para proteger seus endpoints.
-
-### Fluxo de autenticação
-
-1. Usuário envia **email e senha**
-2. API valida as credenciais
-3. API gera um **JWT**
-4. Token é retornado ao frontend
-5. O frontend envia o token automaticamente nas requisições protegidas
+- .NET 10 SDK
+- (Opcional) SQL Server ou SQLite
+- (Opcional) Docker para containerização
 
 ---
 
-## 🔑 Endpoint de Login
+## Como executar
 
-### `POST /api/auth/login`
+1. Clone o repositório
 
-**Request Body:**
+```bash
+git clone https://github.com/Jean5316/API_AGENDA.git
+cd API_AGENDA
+```
+
+2. Atualize as configurações em `appsettings.json` (connection string, chave JWT)
+
+3. Aplicar migrações (se usar EF Core e banco):
+
+```bash
+dotnet tool install --global dotnet-ef # se não tiver o ef tool
+dotnet ef database update
+```
+
+4. Executar a API:
+
+```bash
+dotnet run
+```
+
+O Swagger normalmente ficará disponível em `https://localhost:{porta}/swagger`.
+
+---
+
+## 🔐 Autenticação (JWT)
+
+A API utiliza JWT Bearer Token para proteger endpoints.
+
+### Fluxo resumido
+
+1. Usuário envia `email` e `senha` para o endpoint de login.
+2. API valida credenciais e retorna um token JWT.
+3. Frontend armazena o token e o envia no header `Authorization: Bearer {token}` nas chamadas protegidas.
+
+### Endpoint de autenticação (exemplo)
+
+`POST /api/auth/login`
+
+Request Body (exemplo):
+
 ```json
 {
   "email": "usuario@teste.com",
   "senha": "123456"
 }
-Response:
+```
 
+Response (exemplo):
+
+```json
 {
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 }
 ```
 
-🧾 Claims presentes no token
-O JWT contém as seguintes informações:
+### Protegendo endpoints
 
-name → Email do usuário
+Use o atributo `[Authorize]` nos controllers ou actions que devem exigir autenticação.
+Sem token válido, a API retorna `401 Unauthorized`.
 
-id → ID do usuário
+### Configuração básica do JWT
 
-iss → Issuer da aplicação
+No `appsettings.json` coloque a configuração do JWT, por exemplo:
 
-aud → Audience configurada
-
-exp → Data de expiração
-
-Essas informações são utilizadas para validação e controle de acesso.
-
-🔒 Proteção de Endpoints
-```text
-Endpoints protegidos utilizam o atributo:
-
-[Authorize]
-Exemplo:
-
-[Authorize]
-[HttpGet("contatos")]
-public IActionResult GetContatos()
-{
-    return Ok();
-}
-Sem token válido, a API retorna:
-
-401 Unauthorized
-```
-
-🧩 Configuração do JWT
-Configuração realizada no appsettings.json:
 ```json
 "Jwt": {
   "Key": "CHAVE_SUPER_SECRETA_COM_MAIS_DE_32_CARACTERES",
   "Issuer": "API_AGENDA",
   "Audience": "API_AGENDA_USUARIOS"
 }
-E configurada no Program.cs usando AddAuthentication e AddJwtBearer.
 ```
 
-```text
-📂 Estrutura do projeto
+E registre a autenticação em `Program.cs` usando `AddAuthentication` e `AddJwtBearer`.
+
+---
+
+## Estrutura sugerida do projeto
+
+```
 API_AGENDA/
  ├── Controllers/
  │   ├── AuthController.cs
@@ -122,44 +136,43 @@ API_AGENDA/
  └── appsettings.json
 ```
 
-🧪 Testes via Swagger
-Acesse:
+---
 
-https://localhost:xxxx/swagger
-Faça login via /api/auth/login
+## Testes e documentação (Swagger)
 
-Copie o token retornado
+Ao rodar a aplicação, acesse `/swagger` para testar endpoints. Para endpoints protegidos:
 
-Clique em Authorize
+1. Chame o endpoint de login e copie o token retornado.
+2. Clique em `Authorize` no Swagger e cole `Bearer {token}`.
+3. Teste os endpoints protegidos.
 
-Informe:
+---
 
-Bearer SEU_TOKEN
-Teste os endpoints protegidos
+## Integração com frontend
 
-🔗 Integração com o Frontend
-Esta API é consumida por um frontend desenvolvido em Angular 21, que utiliza:
+O frontend em Angular utiliza um `HTTP Interceptor` para adicionar automaticamente o header `Authorization` nas requisições e `AuthGuard` para proteger rotas.
 
-Interceptor HTTP para envio automático do token
+Repositório do frontend (exemplo):
+https://github.com/Jean5316/agenda-front
 
-AuthGuard para proteção de rotas
+---
 
-Login baseado em JWT
+## Próximos passos / Roadmap
 
-➡️ Repositório do frontend:https://github.com/Jean5316/agenda-front
+- Buscar por nome (search)
+- Paginação
+- Implementar área administrativa
+- Refresh Token
+- Roles & Permissões
+- Tratamento global de erros e logs
+- Testes automatizados
+- Dockerização
+- Deploy
 
-📌 Próximos passos
- CRUD completo de contatos
+---
 
- Vínculo de contatos por usuário
-
- Refresh Token
-
- Roles e permissões
-
- Logs e tratamento global de erros
-
-👤 Autor
+## Autor
 Desenvolvido por Jean Carlo
-💻 GitHub: https://github.com/Jean5316
+
+GitHub: https://github.com/Jean5316
 
