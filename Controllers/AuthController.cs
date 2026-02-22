@@ -10,6 +10,7 @@ using API_AGENDA.Context;
 using API_AGENDA.DTOs;
 using API_AGENDA.Models;
 using API_AGENDA.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -32,7 +33,7 @@ namespace API_AGENDA.Controllers
             _passwordHasher = passwordHasher;
             _tokenService = token;
         }
-
+        [Authorize]
         // Endpoint para registrar um novo usuário
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto dto)
@@ -98,7 +99,7 @@ namespace API_AGENDA.Controllers
             });
 
         }
-
+        
         [HttpPost("refresh")]
         public async Task<ActionResult> RefreshToken(RefreshRequestDto dto)
         {
