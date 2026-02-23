@@ -1,6 +1,7 @@
 using API_AGENDA.Context;
 using API_AGENDA.DTOs;
 using API_AGENDA.Models;
+using API_AGENDA.ModelViews;
 using API_AGENDA.Repository.Interfaces;
 using API_AGENDA.Services;
 using API_AGENDA.Services.Interfaces;
@@ -35,7 +36,7 @@ namespace API_AGENDA.Controllers
 
 
 
-        //GET: api/Contatos 
+        //GET: api/Contatos
         //TODOS CONTATOS ATIVOS
         [HttpGet]
         public async Task<IActionResult> Get()
@@ -110,6 +111,7 @@ namespace API_AGENDA.Controllers
         public async Task<IActionResult> CriarContato(ContatoCriarDto dto)
         {
             var usuarioId = getUsuarioId();
+           
 
             var contato = await _service.CriarContato(dto, usuarioId);
             return Ok(contato);

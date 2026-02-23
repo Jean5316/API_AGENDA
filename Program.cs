@@ -1,5 +1,6 @@
 using API_AGENDA.Context;
 using API_AGENDA.Models;
+using API_AGENDA.ModelViews;
 using API_AGENDA.Repository;
 using API_AGENDA.Repository.Interfaces;
 using API_AGENDA.Services;
@@ -45,16 +46,16 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });//Obrigaorio para mostrar no swagger, configurações para autenticação no swagger
-
 builder.Services.AddControllers();//Obrigaorio para mostrar no swagger
+
 builder.Services.AddScoped<IContatoRepository, ContatoRepository>();// Injeção de dependência do repositório
 builder.Services.AddScoped<IPasswordHasher<Usuario>, PasswordHasher<Usuario>>();//Injeção de dependencia do PasswordHasher
 builder.Services.AddScoped<IContatoService, ContatoService>();//Injeção de dependencia do contato service
 builder.Services.AddScoped<ItokenService, TokenService>();//Injeção de dependencia do token service
 
-
-var jwtSettings = builder.Configuration.GetSection("Jwt");// Configurações do JWT
-var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]!);// Chave secreta para assinatura do token
+//Configurando autenticação JWT
+var jwtSettings = builder.Configuration.GetSection("Jwt");// busca configurações no appsettings
+var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]!);// Chave secreta para assinatura do token
 
 builder.Services.AddAuthentication(options =>
 {
@@ -92,6 +93,8 @@ builder.Services.AddDbContext<AgendaContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("ConexaoSqlite")));
 
 var app = builder.Build();
+//mostrar retorno na home
+app.MapGet("/", () => new Home()).WithTags("Home");// Rota para verificar se a API está funcionando
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -100,12 +103,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
-
-
 app.UseCors("Angular");// Habilita o CORS com a política definida para o Angular
 app.UseHttpsRedirection();// Redireciona HTTP para HTTPS
-
 
 app.UseAuthentication();// Habilita a autenticação
 app.UseAuthorization();// Habilita a autorização

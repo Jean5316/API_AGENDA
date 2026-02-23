@@ -8,12 +8,12 @@ namespace API_AGENDA.DTOs
 {
     public class ContatoCriarDto
     {
-        [Required]
+        [Required(ErrorMessage = "O nome é obrigatório.")]
         [MaxLength(100)]
         public string Nome { get; set;}
 
-        [Required]
-        [Phone]
+        [Required(ErrorMessage = "Telefone é obrigatório.")]
+        [Phone(ErrorMessage = "Numero de Telefone inválido.")]
         [MaxLength(20)]
         [RegularExpression(@"^\(\d{2}\)\d{4,5}-\d{4}$",
         ErrorMessage = "Telefone inválido.")]
@@ -24,6 +24,6 @@ namespace API_AGENDA.DTOs
         [MaxLength(50)]
         public string? Categoria { get; set;}
         public bool Favorito { get; set;}
-        
+
     }
 }

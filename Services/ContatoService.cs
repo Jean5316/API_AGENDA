@@ -1,5 +1,6 @@
 ﻿using API_AGENDA.DTOs;
 using API_AGENDA.Models;
+using API_AGENDA.ModelViews;
 using API_AGENDA.Repository.Interfaces;
 using API_AGENDA.Services.Interfaces;
 using Microsoft.AspNetCore.Components.Routing;
@@ -16,7 +17,7 @@ namespace API_AGENDA.Services
             _repository = repository;
         }
 
-        
+
 
         public async Task<bool> AtualizarContato(ContatoAtualizarDto dto, int id, int usuarioId)
         {
@@ -37,7 +38,7 @@ namespace API_AGENDA.Services
             await _repository.UpdateContatoAsync(contato);
             return true;
 
-            
+
         }
 
         public async Task<ContatoResponseDto> CriarContato(ContatoCriarDto dto, int usuarioId)
@@ -51,7 +52,7 @@ namespace API_AGENDA.Services
                 Favorito = dto.Favorito,
                 UsuarioId = usuarioId
             };
-            
+
 
             await _repository.AddContatoAsync(contato);
 
@@ -65,7 +66,7 @@ namespace API_AGENDA.Services
 
             };
 
-            
+
         }
 
         public async Task<bool> DeletarContato(int id, int usuarioId)
@@ -77,11 +78,11 @@ namespace API_AGENDA.Services
                 return false;
 
             }
-            
+
             await _repository.DeleteContatoAsync(contato);
             return true;
 
-            
+
         }
 
         public async Task<ContatoResponseDto> ListarContato(int id, int usuarioId)
@@ -101,7 +102,7 @@ namespace API_AGENDA.Services
                 Favorito = contato.Favorito
             };
 
-            
+
         }
 
         public async Task<List<ContatoResponseDto>> ListarContatos(int usuarioId)
@@ -118,7 +119,7 @@ namespace API_AGENDA.Services
                 Favorito = c.Favorito
 
             }).ToList();
-            
+
         }
 
         public async Task<List<ContatoResponseDto>> ListarFavoritos(int usuarioId)
@@ -133,7 +134,7 @@ namespace API_AGENDA.Services
                 Categoria = c.Categoria,
                 Favorito = c.Favorito
             }).ToList();
-            
+
         }
 
         public async Task<PaginacaoResponse<ContatoResponseDto>> ListarPaginadoAsync(int usuarioId, int pagina, int tamanhoPagina)
@@ -143,7 +144,7 @@ namespace API_AGENDA.Services
             if (tamanhoPagina <= 0 || tamanhoPagina > 50) tamanhoPagina = 10;
 
             var resultado = await _repository.ListaPaginadoAsync(usuarioId, pagina, tamanhoPagina);
-            
+
             return new PaginacaoResponse<ContatoResponseDto>
             {
                 Pagina = resultado.Pagina,
@@ -175,5 +176,7 @@ namespace API_AGENDA.Services
                 Favorito = c.Favorito
             }).ToList();
         }
+
+
     }
 }

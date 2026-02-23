@@ -20,15 +20,18 @@ namespace API_AGENDA.Services
         public string CreateToken(Usuario usuario)
         {
             var jwtSettings = _config.GetSection("Jwt");//informando Jwt do Appsettings
-            var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]!);//chave de segurança para assinar o token
+            var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]!);//chave de segurança para assinar o token
 
             //claims informações que nao no token
             var claims = new[]
             {
+                //no claim(tipodedado, aonde fica o dado)
                 new Claim(ClaimTypes.Name, usuario.Email),
                 new Claim(ClaimTypes.Role, usuario.Role),
                 new Claim("id", usuario.Id.ToString()),
             };
+            var credentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature);//pega key no appsettings e encripta o token usando HmacSha256Signature
+
 
             //gerando token
             var token = new JwtSecurityToken(
@@ -36,7 +39,7 @@ namespace API_AGENDA.Services
                 audience: jwtSettings["Audience"],
                 claims: claims,
                 expires: DateTime.UtcNow.AddMinutes(15),
-                signingCredentials: new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)//credencias de assinatura do token
+                signingCredentials: credentials
             );
             return new JwtSecurityTokenHandler().WriteToken(token);//retornando token gerado
         }
