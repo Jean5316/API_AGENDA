@@ -80,7 +80,7 @@ namespace API_AGENDA.Controllers
 
             //refresh token gerado
             var refreshToken = _tokenService.refreshToken();
-            
+
             var refreshTokenModel = new RefreshToken
             {
                 Token = refreshToken,
@@ -94,12 +94,15 @@ namespace API_AGENDA.Controllers
 
             return Ok(new LoginResponseDto
             {
+                Role = usuario.Role,
+                Email = usuario.Email,
                 Token = token,
-                RefreshToken = refreshToken
+                RefreshToken = refreshToken,
+
             });
 
         }
-        
+
         [HttpPost("refresh")]
         public async Task<ActionResult> RefreshToken(RefreshRequestDto dto)
         {

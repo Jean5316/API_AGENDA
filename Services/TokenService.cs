@@ -26,11 +26,11 @@ namespace API_AGENDA.Services
             var claims = new[]
             {
                 //no claim(tipodedado, aonde fica o dado)
-                new Claim(ClaimTypes.Name, usuario.Email),
-                new Claim(ClaimTypes.Role, usuario.Role),
+                new Claim("Email", usuario.Email),
+                new Claim("Tipo de Usuário", usuario.Role),
                 new Claim("id", usuario.Id.ToString()),
             };
-            var credentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature);//pega key no appsettings e encripta o token usando HmacSha256Signature
+            var credentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);//pega key no appsettings e encripta o token usando HmacSha256Signature
 
 
             //gerando token
