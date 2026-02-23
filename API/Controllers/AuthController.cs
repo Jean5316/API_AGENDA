@@ -134,6 +134,8 @@ namespace API_AGENDA.Controllers
 
             return Ok(new LoginResponseDto
             {
+                Email = refresTokenDB.Usuario.Email,
+                Role = refresTokenDB.Usuario.Role,
                 Token = token,
                 RefreshToken = novoRefreshToken
             });
