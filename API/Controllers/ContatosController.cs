@@ -28,6 +28,7 @@ namespace API_AGENDA.Controllers
             _service = service;
         }
 
+        //função para pegar o id do usuário logado a partir dos claims do token JWT
         private int getUsuarioId()
         {
             var claim = User.FindFirst("id");
@@ -111,7 +112,7 @@ namespace API_AGENDA.Controllers
         public async Task<IActionResult> CriarContato(ContatoCriarDto dto)
         {
             var usuarioId = getUsuarioId();
-           
+
 
             var contato = await _service.CriarContato(dto, usuarioId);
             return Ok(contato);

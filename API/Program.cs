@@ -21,7 +21,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();//Obrigaorio para mostrar no swagger, habilita a exploração de endpoints para o Swagger
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new () { Title = "API Agenda", Version = "v1" });
+    c.SwaggerDoc("v1", new() { Title = "API Agenda", Version = "v1" });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -46,7 +46,7 @@ builder.Services.AddSwaggerGen(c =>
             new string[] {}
         }
     });
-});//Obrigaorio para mostrar no swagger, configurações para autenticação no swagger
+});//Obrigaorio para mostrar no swagger, botao Authorize para autenticação JWT no Swagger
 builder.Services.AddControllers();//Obrigaorio para mostrar no swagger
 
 builder.Services.AddScoped<IContatoRepository, ContatoRepository>();// Injeção de dependência do repositório
@@ -94,14 +94,63 @@ builder.Services.AddDbContext<AgendaContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("ConexaoSqlite")));
 
 var app = builder.Build();
-//mostrar retorno na home
-app.MapGet("/", () => new Home()).AllowAnonymous().WithTags("Home");// Rota para verificar se a API está funcionando
+//mostrar html na raiz da aplicação para verificar se a API está funcionando, sem necessidade de autenticação
+//porem nao esta funcionando por que no if de desenvolvimento o swagger esta configurado para ser mostrado na raiz da aplicação, entao o html nao aparece.
+app.MapGet("/", () =>
+{
+    var html = """
+<html>
+        <head>
+            <title>API Agenda</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    background-color: #f4f4f4;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 100vh;
+                    margin: 0;
+                }
+                .container {
+                    background-color: #fff;
+                    padding: 20px 40px;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                    text-align: center;
+                }
+                h1 {
+                    color: #333;
+                }
+                p {
+                    color: #666;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>API Agenda</h1>
+<p>Bem-vindo à API Agenda! Esta API foi desenvolvida para
+gerenciar contatos de forma eficiente e segura. Com recursos
+de autenticação JWT, você pode criar, ler, atualizar e excluir
+contatos, garantindo que suas informações estejam protegidas.</p>
+<p>Para começar, acesse a documentação interativa da API no Swagger:</p>
+<a href="/swagger/index.html">Documentação Swagger</a>
+            </div>
+        </body>
+""";
+    return Results.Content(html, "text/html", Encoding.UTF8);
+}).AllowAnonymous().WithTags("Home");// Rota para verificar se a API está funcionando
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "API Agenda v1");
+        c.RoutePrefix = string.Empty; // Define o Swagger UI na raiz da aplicação
+    });
 }
 
 app.UseCors("Angular");// Habilita o CORS com a política definida para o Angular
