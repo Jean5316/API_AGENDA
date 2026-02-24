@@ -55,5 +55,7 @@ namespace API.Services
            }).ToList();
 
         }
+
+        //ToDo: Implementar método para filtrar usuários ativos/inativos, nome
     }
 }

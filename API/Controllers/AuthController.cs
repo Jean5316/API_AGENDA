@@ -19,7 +19,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace API_AGENDA.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     public class AuthController : ControllerBase
     {
         // Injeção de dependência para o contexto do banco e configuração

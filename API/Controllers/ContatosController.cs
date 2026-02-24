@@ -18,7 +18,7 @@ namespace API_AGENDA.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     public class ContatosController : ControllerBase
     {
         //INJEÇÃO DE DEPENDÊNCIA PARA O REPOSITÓRIO

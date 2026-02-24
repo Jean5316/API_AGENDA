@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers
 {   [Authorize(Roles = "Admin")]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     public class AdminController : ControllerBase
     {
         private readonly IAdminService _adminService;
