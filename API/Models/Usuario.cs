@@ -10,6 +10,8 @@ namespace API_AGENDA.Models
     {
         public int Id { get; set; }
 
+        public bool Ativo { get; set; } = true;
+
         [Required]
         public string Name { get; set; } = string.Empty;
 

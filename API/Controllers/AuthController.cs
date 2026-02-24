@@ -62,7 +62,9 @@ namespace API_AGENDA.Controllers
         [HttpPost("login")]
         public async Task<ActionResult> Login(LoginDto login)
         {
+            //mudar context parssar para service de autenticação
             var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == login.Email);//verifica email
+            if(usuario.Ativo == false) return Unauthorized("Usuario inativo, contate o administrador");
             if (usuario == null) return Unauthorized("Email ou senha Invalidos");
 
             var res = _passwordHasher.VerifyHashedPassword(

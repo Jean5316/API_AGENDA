@@ -1,3 +1,7 @@
+using API.Repository;
+using API.Repository.Interfaces;
+using API.Services;
+using API.Services.Interfaces;
 using API_AGENDA.Context;
 using API_AGENDA.Models;
 using API_AGENDA.ModelViews;
@@ -40,6 +44,8 @@ builder.Services.AddScoped<IContatoRepository, ContatoRepository>();// Injeção
 builder.Services.AddScoped<IPasswordHasher<Usuario>, PasswordHasher<Usuario>>();//Injeção de dependencia do PasswordHasher
 builder.Services.AddScoped<IContatoService, ContatoService>();//Injeção de dependencia do contato service
 builder.Services.AddScoped<ItokenService, TokenService>();//Injeção de dependencia do token service
+builder.Services.AddScoped<IAdminService, AdminService>();//Injeção de dependencia do admin service
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();//Injeção de dependencia do usuario repository
 
 //Configurando autenticação JWT
 var jwtSettings = builder.Configuration.GetSection("Jwt");// busca configurações no appsettings

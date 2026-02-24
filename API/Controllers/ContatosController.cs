@@ -132,11 +132,11 @@ namespace API_AGENDA.Controllers
         {
             var usuarioId = getUsuarioId();
             var atualizado = await _service.AtualizarContato(dto, id, usuarioId);
-            if (!atualizado)
+            if (atualizado)
             {
-                return NotFound("Contato não encontrado");
+               return Ok("Contato atualizado com sucesso.");
             }
-            return NoContent();
+             return BadRequest("Contato não encontrado");
 
         }
 
@@ -148,12 +148,12 @@ namespace API_AGENDA.Controllers
             var usuarioId = getUsuarioId();
 
             var deletado = await _service.DeletarContato(id, usuarioId);
-            if (!deletado)
+            if (deletado)
             {
-                return NotFound("Contato não encontrado");
+                return Ok("Usuario Deletado com sucesso!");
             }
 
-            return NoContent();
+            return NotFound("Contato não encontrado");
 
 
         }
