@@ -27,7 +27,7 @@ namespace API_AGENDA.Services
             {
                 //no claim(tipodedado, aonde fica o dado)
                 new Claim("Email", usuario.Email),
-                new Claim("Tipo de Usuário", usuario.Role),
+                new Claim(ClaimTypes.Role, usuario.Role),
                 new Claim("id", usuario.Id.ToString()),
             };
             var credentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);//pega key no appsettings e encripta o token usando HmacSha256Signature

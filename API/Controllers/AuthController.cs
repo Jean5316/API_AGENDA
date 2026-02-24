@@ -33,7 +33,7 @@ namespace API_AGENDA.Controllers
             _passwordHasher = passwordHasher;
             _tokenService = token;
         }
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         // Endpoint para registrar um novo usuário
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto dto)
@@ -45,7 +45,7 @@ namespace API_AGENDA.Controllers
             {
                 Name = dto.Nome,
                 Email = dto.Email,
-                Role = "User"
+                Role = dto.Role,
             };
 
             //cria a hash da senha
@@ -103,7 +103,7 @@ namespace API_AGENDA.Controllers
             });
 
         }
-
+        [AllowAnonymous]
         [HttpPost("refresh")]
         public async Task<ActionResult> RefreshToken(RefreshRequestDto dto)
         {

@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace API_AGENDA.Controllers
@@ -39,6 +40,9 @@ namespace API_AGENDA.Controllers
 
         //GET: api/Contatos
         //TODOS CONTATOS ATIVOS
+        //<summary>
+        /// Retorna todos os contatos ativos do usuário logado.
+        //</summary>
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -62,6 +66,7 @@ namespace API_AGENDA.Controllers
                 return NotFound("Contato não encontrado");
             }
             return Ok(contato);
+
 
 
         }

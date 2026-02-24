@@ -7,8 +7,8 @@
 | 5     | 🔥 Busca por nome						|	OK		|
 | 6     | 🔥 Paginação							|	OK		|
 | 7		| Implementar Area Administrativa		|			|
-| 8     | 🚀 Refresh Token						|			|
-| 9     | 🚀 Roles & Permissões					|			|
+| 8     | 🚀 Refresh Token						|	OK		|
+| 9     | 🚀 Roles & Permissões					|	OK		|
 | 10     | 🛡 Error Handling						|			|
 | 11    | 🧪 Testes								|			|
 | 12    | 🐳 Docker								|			|
@@ -19,7 +19,7 @@
 //Anotações de codigo
 @"^\(\d{2}\)\d{4,5}-\d{4}$"
 
-@ = String Literal evita escrever igual 
+@ = String Literal evita escrever igual
 ^ = Inicio da sting
 \( = (
 \d = numeros de 0-9
