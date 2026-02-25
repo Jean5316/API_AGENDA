@@ -168,17 +168,19 @@ if (app.Environment.IsDevelopment())
 
     app.MapOpenApi();
 
-    app.MapScalarApiReference(o =>
+    app.MapScalarApiReference("", o =>
 
     {
 
         o.WithTitle("API Agenda")
 
-         .WithTheme(ScalarTheme.Moon)
+         .WithTheme(ScalarTheme.DeepSpace)
 
-         .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
+         .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient)
+         .WithOpenApiRoutePattern("/openapi/v1.json");
 
-    });
+
+    });//direciona o scalar para home e indica qual arquivo de documentação.
 
 
 
