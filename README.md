@@ -61,6 +61,13 @@ dotnet run
 
 O Swagger normalmente ficará disponível em `https://localhost:{porta}/swagger`.
 
+5. **Rodar testes automatizados** (projeto `Teste`):
+
+```bash
+cd Teste
+dotnet test
+```
+
 ---
 
 ## 🔐 Autenticação (JWT)
@@ -99,7 +106,43 @@ Response (exemplo):
 Use o atributo `[Authorize]` nos controllers ou actions que devem exigir autenticação.
 Sem token válido, a API retorna `401 Unauthorized`.
 
-### Configuração básica do JWT
+---
+
+## Endpoints principais
+
+Abaixo uma visão geral dos endpoints mais importantes desta API. Todos os endpoints (exceto os de autenticação) exigem um token JWT válido via header `Authorization: Bearer {token}`.
+
+- **Autenticação**
+  - `POST /api/auth/login` — autentica usuário e retorna um JWT.
+    - Body exemplo:
+      ```json
+      { "email": "usuario@teste.com", "senha": "123456" }
+      ```
+  - `POST /api/auth/refresh` — renova o token usando refresh token.
+
+- **Contatos** (`ContatosController`)
+  - `GET /api/contatos` — lista todos os contatos do usuário (ativos).
+  - `GET /api/contatos/{id}` — obtém um contato por ID (do usuário autenticado).
+  - `GET /api/contatos/favoritos` — lista apenas contatos marcados como favoritos.
+  - `GET /api/contatos/buscar?nome={nome}` — busca contatos cujo nome contenha o termo informado.
+    - Exemplo: `/api/contatos/buscar?nome=jean`
+  - `GET /api/contatos/paginacao?pagina={n}&tamanhoPagina={m}` — listagem paginada. Parâmetros opcionais: `pagina` (padrão 1) e `tamanhoPagina` (padrão 2).
+  - `POST /api/contatos` — cria um novo contato.
+    - Body: objeto `ContatoCriarDto` (nome, telefone, email, etc.).
+  - `PUT /api/contatos/AtualizarContato/{id}` — atualiza um contato existente por ID.
+    - Body: objeto `ContatoAtualizarDto`.
+  - `DELETE /api/contatos/DeletarContato/{id}` — remove (ou marca como removido) um contato por ID.
+
+- **Administração** (`AdminController`) — exige **role Admin**
+  - `GET /api/admin/listar-usuarios` — retorna lista de usuários.
+  - `POST /api/admin/alterar-usuario?id={id}` — atualiza campos de um usuário.
+  - `DELETE /api/admin/deletar-usuario/{id}` — exclui usuário do sistema.
+
+> Consulte o Swagger para ver esquemas de request e response.
+
+---
+
+## Configuração básica do JWT
 
 No `appsettings.json` coloque a configuração do JWT, por exemplo:
 
@@ -115,67 +158,6 @@ E registre a autenticação em `Program.cs` usando `AddAuthentication` e `AddJwt
 
 ---
 
-## Estrutura sugerida do projeto
-
-```
-API_AGENDA/
- ├── Controllers/
- │   ├── AuthController.cs
- │   └── ContatosController.cs
- ├── Entities/
- │   ├── Usuario.cs
- │   └── Contato.cs
- ├── DTOs/
- │   ├── LoginDto.cs
- │   └── ContatoDto.cs
- ├── Data/
- │   └── AppDbContext.cs
- ├── Services/
- │   └── TokenService.cs
- ├── Program.cs
- └── appsettings.json
-```
-
----
-
-## Testes e documentação (Swagger)
-
-Ao rodar a aplicação, acesse `/swagger` para testar endpoints. Para endpoints protegidos:
-
-1. Chame o endpoint de login e copie o token retornado.
-2. Clique em `Authorize` no Swagger e cole `Bearer {token}`.
-3. Teste os endpoints protegidos.
-
----
-
-## Endpoints principais
-
-Abaixo uma visão geral dos endpoints mais importantes desta API. Todos os endpoints (exceto os de autenticação) exigem um token JWT válido via header `Authorization: Bearer {token}`.
-
-- Autenticação
-  - `POST /api/auth/login` — autentica usuário e retorna um JWT.
-    - Body exemplo:
-      ```json
-      { "email": "usuario@teste.com", "senha": "123456" }
-      ```
-
-- Contatos (`ContatosController`)
-  - `GET /api/contatos` — lista todos os contatos do usuário (ativos).
-  - `GET /api/contatos/{id}` — obtém um contato por ID (do usuário autenticado).
-  - `GET /api/contatos/favoritos` — lista apenas contatos marcados como favoritos.
-  - `GET /api/contatos/buscar?nome={nome}` — busca contatos cujo nome contenha o termo informado.
-    - Exemplo: `/api/contatos/buscar?nome=jean`
-  - `GET /api/contatos/paginacao?pagina={n}&tamanhoPagina={m}` — listagem paginada. Parâmetros opcionais: `pagina` (padrão 1) e `tamanhoPagina` (padrão 2).
-  - `POST /api/contatos` — cria um novo contato.
-    - Body: objeto `ContatoCriarDto` (nome, telefone, email, etc.).
-  - `PUT /api/contatos/AtualizarContato/{id}` — atualiza um contato existente por ID.
-    - Body: objeto `ContatoAtualizarDto`.
-  - `DELETE /api/contatos/DeletarContato/{id}` — remove (ou marca como removido) um contato por ID.
-
-Observação: os nomes exatos dos DTOs e propriedades seguem a implementação do projeto. Use o Swagger para ver exemplos e esquemas dos bodies.
-
----
-
 ## Integração com frontend
 
 O frontend em Angular utiliza um `HTTP Interceptor` para adicionar automaticamente o header `Authorization` nas requisições e `AuthGuard` para proteger rotas.
@@ -187,19 +169,20 @@ https://github.com/Jean5316/agenda-front
 
 ## Próximos passos / Roadmap
 
-- Buscar por nome (search)
-- Paginação
-- Implementar área administrativa
-- Refresh Token
-- Roles & Permissões
+- Buscar por nome (search) ✅
+- Paginação ✅
+- Implementar área administrativa ✅
+- Refresh Token ✅
+- Roles & Permissões ✅
 - Tratamento global de erros e logs
-- Testes automatizados
+- Testes e cobertura ampliada
 - Dockerização
 - Deploy
 
 ---
 
 ## Autor
+
 Desenvolvido por Jean Carlo
 
 GitHub: https://github.com/Jean5316
