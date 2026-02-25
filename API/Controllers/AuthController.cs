@@ -64,8 +64,9 @@ namespace API_AGENDA.Controllers
         {
             //mudar context parssar para service de autenticação
             var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == login.Email);//verifica email
+            if(usuario == null) return Unauthorized("Email ou senha Invalidos");
             if(usuario.Ativo == false) return Unauthorized("Usuario inativo, contate o administrador");
-            if (usuario == null) return Unauthorized("Email ou senha Invalidos");
+
 
             var res = _passwordHasher.VerifyHashedPassword(
                 usuario,

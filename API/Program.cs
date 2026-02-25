@@ -4,13 +4,11 @@ using API.Services;
 using API.Services.Interfaces;
 using API_AGENDA.Context;
 using API_AGENDA.Models;
-
 using API_AGENDA.Repository;
 using API_AGENDA.Repository.Interfaces;
 using API_AGENDA.Services;
 using API_AGENDA.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
