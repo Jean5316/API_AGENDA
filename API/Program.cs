@@ -4,17 +4,18 @@ using API.Services;
 using API.Services.Interfaces;
 using API_AGENDA.Context;
 using API_AGENDA.Models;
-using API_AGENDA.ModelViews;
+
 using API_AGENDA.Repository;
 using API_AGENDA.Repository.Interfaces;
 using API_AGENDA.Services;
 using API_AGENDA.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Diagnostics;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
+using Scalar.AspNetCore;
 using System.Text;
 
 
@@ -23,20 +24,45 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();//Obrigaorio para mostrar no swagger, habilita a exploração de endpoints para o Swagger
-builder.Services.AddSwaggerGen(c =>
+builder.Services.AddOpenApi(options =>
 {
-    c.SwaggerDoc("v1", new() { Title = "API Agenda", Version = "v1" });
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    // 1. Define o esquema de segurança no documento (Cria a definição do Cadeado)
+    options.AddDocumentTransformer((document, context, cancellationToken) =>
     {
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        Scheme = "Bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "Digite: Bearer {seu token aqui}"
+        document.Components ??= new OpenApiComponents();
+        document.Components.SecuritySchemes?.Add("Bearer", new OpenApiSecurityScheme
+        {
+            Type = SecuritySchemeType.Http,
+            Scheme = "Bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Description = "Introduza o seu Token JWT para aceder aos endpoints protegidos."
+        });
+        return Task.CompletedTask;
     });
 
-    c.OperationFilter<AuthorizeCheckOperationFilter>();// Adiciona o filtro de operação para verificar a autorização nos endpoints
+    // 2. Aplica o cadeado apenas nos métodos que têm o atributo [Authorize]
+    options.AddOperationTransformer((operation, context, cancellationToken) =>
+    {
+        var metadata = context.Description.ActionDescriptor.EndpointMetadata;
+
+        if (metadata.Any(m => m is Microsoft.AspNetCore.Authorization.AuthorizeAttribute ||
+                         m is Microsoft.AspNetCore.Authorization.IAuthorizeData))
+        {
+            operation.Security =  new List<OpenApiSecurityRequirement>
+            {
+                new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecuritySchemeReference("Bearer"),
+                        new List<string>()
+                    }
+                }
+
+            };
+        }
+        return Task.CompletedTask;
+    });
 });//Obrigaorio para mostrar no swagger, botao Authorize para autenticação JWT no Swagger
 builder.Services.AddControllers();//Obrigaorio para mostrar no swagger
 
@@ -137,13 +163,25 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
+
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
+
+    app.MapOpenApi();
+
+    app.MapScalarApiReference(o =>
+
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "API Agenda v1");
-        c.RoutePrefix = string.Empty; // Define o Swagger UI na raiz da aplicação
+
+        o.WithTitle("API Agenda")
+
+         .WithTheme(ScalarTheme.Moon)
+
+         .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
+
     });
+
+
+
 }
 
 app.UseCors("Angular");// Habilita o CORS com a política definida para o Angular
