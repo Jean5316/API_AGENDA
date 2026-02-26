@@ -72,7 +72,7 @@ Log.Logger = new LoggerConfiguration()
 
 
     // Log geral
-    .WriteTo.File($"Logs/{DateTime.Now.ToString("yyyy-MM-dd")}/geral-.txt",
+    .WriteTo.File($"Logs/{DateTime.Now.ToString("yyyy-MM-dd")}/geral.txt",
         rollingInterval: RollingInterval.Infinite, shared: true,
         outputTemplate:
          "{Timestamp:yyyy-MM-dd HH:mm:ss} | [{Level}] | {SourceContext} | {Message:lj}{NewLine}{Exception}")
