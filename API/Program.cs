@@ -73,7 +73,7 @@ Log.Logger = new LoggerConfiguration()
 
     // Log geral
     .WriteTo.File($"Logs/{DateTime.Now.ToString("yyyy-MM-dd")}/geral-.txt",
-        rollingInterval: RollingInterval.Day, shared: true,
+        rollingInterval: RollingInterval.Infinite, shared: true,
         outputTemplate:
          "{Timestamp:yyyy-MM-dd HH:mm:ss} | [{Level}] | {SourceContext} | {Message:lj}{NewLine}{Exception}")
 
@@ -83,7 +83,7 @@ Log.Logger = new LoggerConfiguration()
             e.Properties.ContainsKey("SourceContext") &&
             e.Properties["SourceContext"].ToString().Contains("AdminController"))
         .WriteTo.File($"Logs/{DateTime.Now.ToString("yyyy-MM-dd")}/admin.txt",
-            rollingInterval: RollingInterval.Day, shared: true,
+            rollingInterval: RollingInterval.Infinite, shared: true,
             outputTemplate:
         "{Timestamp:yyyy-MM-dd HH:mm:ss} | [{Level}] | {SourceContext} | {Message:lj}{NewLine}{Exception}"))
 
@@ -93,7 +93,7 @@ Log.Logger = new LoggerConfiguration()
             e.Properties.ContainsKey("SourceContext") &&
             e.Properties["SourceContext"].ToString().Contains("AuthController"))
         .WriteTo.File($"Logs/{DateTime.Now.ToString("yyyy-MM-dd")}/auth.txt",
-            rollingInterval: RollingInterval.Day, shared: true,
+            rollingInterval: RollingInterval.Infinite, shared: true,
             outputTemplate:
          "{Timestamp:yyyy-MM-dd HH:mm:ss} | [{Level}] | {SourceContext} | {Message:lj}{NewLine}{Exception}"))
 
