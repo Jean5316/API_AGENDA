@@ -26,6 +26,7 @@ namespace API_AGENDA.Services
             var claims = new[]
             {
                 //no claim(tipodedado, aonde fica o dado)
+                new Claim("Nome", usuario.Name),
                 new Claim("Email", usuario.Email),
                 new Claim(ClaimTypes.Role, usuario.Role),
                 new Claim("id", usuario.Id.ToString()),

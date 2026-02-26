@@ -1,10 +1,8 @@
 ﻿using API_AGENDA.DTOs;
 using API_AGENDA.Models;
-using API_AGENDA.ModelViews;
 using API_AGENDA.Repository.Interfaces;
 using API_AGENDA.Services.Interfaces;
-using Microsoft.AspNetCore.Components.Routing;
-using Microsoft.AspNetCore.Http.HttpResults;
+
 
 namespace API_AGENDA.Services
 {

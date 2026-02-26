@@ -15,6 +15,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Scalar.AspNetCore;
 using System.Text;
+using Serilog;
+using Serilog.Events;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -61,8 +63,43 @@ builder.Services.AddOpenApi(options =>
         }
         return Task.CompletedTask;
     });
-});//Obrigaorio para mostrar no swagger, botao Authorize para autenticação JWT no Swagger
+});
 builder.Services.AddControllers();//Obrigaorio para mostrar no swagger
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+
+
+
+    // Log geral
+    .WriteTo.File($"Logs/{DateTime.Now.ToString("yyyy-MM-dd")}/geral-.txt",
+        rollingInterval: RollingInterval.Day, shared: true,
+        outputTemplate:
+         "{Timestamp:yyyy-MM-dd HH:mm:ss} | [{Level}] | {SourceContext} | {Message:lj}{NewLine}{Exception}")
+
+    // Log apenas AdminController
+    .WriteTo.Logger(lc => lc
+        .Filter.ByIncludingOnly(e =>
+            e.Properties.ContainsKey("SourceContext") &&
+            e.Properties["SourceContext"].ToString().Contains("AdminController"))
+        .WriteTo.File($"Logs/{DateTime.Now.ToString("yyyy-MM-dd")}/admin.txt",
+            rollingInterval: RollingInterval.Day, shared: true,
+            outputTemplate:
+        "{Timestamp:yyyy-MM-dd HH:mm:ss} | [{Level}] | {SourceContext} | {Message:lj}{NewLine}{Exception}"))
+
+    // Log apenas AuthController
+    .WriteTo.Logger(lc => lc
+        .Filter.ByIncludingOnly(e =>
+            e.Properties.ContainsKey("SourceContext") &&
+            e.Properties["SourceContext"].ToString().Contains("AuthController"))
+        .WriteTo.File($"Logs/{DateTime.Now.ToString("yyyy-MM-dd")}/auth.txt",
+            rollingInterval: RollingInterval.Day, shared: true,
+            outputTemplate:
+         "{Timestamp:yyyy-MM-dd HH:mm:ss} | [{Level}] | {SourceContext} | {Message:lj}{NewLine}{Exception}"))
+
+    .CreateLogger();
+
+builder.Host.UseSerilog();// Configura o host para usar o Serilog como provedor de logging
 
 builder.Services.AddScoped<IContatoRepository, ContatoRepository>();// Injeção de dependência do repositório
 builder.Services.AddScoped<IPasswordHasher<Usuario>, PasswordHasher<Usuario>>();//Injeção de dependencia do PasswordHasher
@@ -174,11 +211,11 @@ if (app.Environment.IsDevelopment())
 
          .WithTheme(ScalarTheme.DeepSpace)
 
-         .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient)
-         .WithOpenApiRoutePattern("/openapi/v1.json");
+         .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient)// Configura o HttpClient para a linguagem C# (pode ser ajustado para outras linguagens, se necessário)
+         .WithOpenApiRoutePattern("/openapi/v1.json");//direciona o scalar para home e indica qual arquivo de documentação.
 
 
-    });//direciona o scalar para home e indica qual arquivo de documentação.
+    });
 
 
 
@@ -186,6 +223,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("Angular");// Habilita o CORS com a política definida para o Angular
 app.UseHttpsRedirection();// Redireciona HTTP para HTTPS
+app.UseSerilogRequestLogging();// Habilita o middleware de logging de requisições do Serilog
 
 app.UseAuthentication();// Habilita a autenticação
 app.UseAuthorization();// Habilita a autorização

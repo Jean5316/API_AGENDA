@@ -1,18 +1,7 @@
-using API_AGENDA.Context;
 using API_AGENDA.DTOs;
-using API_AGENDA.Models;
-using API_AGENDA.ModelViews;
-using API_AGENDA.Repository.Interfaces;
-using API_AGENDA.Services;
 using API_AGENDA.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
 namespace API_AGENDA.Controllers
 {

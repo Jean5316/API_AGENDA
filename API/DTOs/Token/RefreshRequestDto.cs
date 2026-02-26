@@ -1,7 +1,10 @@
-﻿namespace API_AGENDA.DTOs
+﻿using System.ComponentModel;
+
+namespace API_AGENDA.DTOs
 {
     public class RefreshRequestDto
     {
-        public string RefreshToken { get; set; }
+        [DefaultValue("string")]
+        public string? RefreshToken { get; set; }
     }
 }

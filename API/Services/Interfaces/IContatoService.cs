@@ -1,6 +1,6 @@
 ﻿using API_AGENDA.DTOs;
-using API_AGENDA.Models;
-using API_AGENDA.ModelViews;
+
+
 
 namespace API_AGENDA.Services.Interfaces
 {
@@ -14,6 +14,6 @@ namespace API_AGENDA.Services.Interfaces
         Task<bool> DeletarContato(int id, int usuarioId);
         Task<List<ContatoResponseDto>> ListarPorNome(string Nome, int usuarioId);
         Task<PaginacaoResponse<ContatoResponseDto>> ListarPaginadoAsync(int usuarioId, int pagina, int tamanhoPagina);
-        
+
     }
 }

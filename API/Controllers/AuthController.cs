@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 
 namespace API_AGENDA.Controllers
 {
@@ -26,12 +27,14 @@ namespace API_AGENDA.Controllers
         private readonly AgendaContext _context;
         private readonly IPasswordHasher<Usuario> _passwordHasher;
         private readonly ItokenService _tokenService;
+        private readonly ILogger<AuthController> _logger;
 
-        public AuthController(AgendaContext context, IPasswordHasher<Usuario> passwordHasher, ItokenService token)
+        public AuthController(AgendaContext context, IPasswordHasher<Usuario> passwordHasher, ItokenService token, ILogger<AuthController> logger)
         {
             _context = context;
             _passwordHasher = passwordHasher;
             _tokenService = token;
+            _logger = logger;
         }
         [Authorize(Roles = "Admin")]
         // Endpoint para registrar um novo usuário
@@ -39,7 +42,11 @@ namespace API_AGENDA.Controllers
         public async Task<IActionResult> Register(RegisterDto dto)
         {
             if (await _context.Usuarios.AnyAsync(u => u.Email == dto.Email))
+            {
+
                 return BadRequest("Email já cadastrado");
+            }
+
 
             var usuario = new Usuario
             {
@@ -52,7 +59,15 @@ namespace API_AGENDA.Controllers
             usuario.SenhaHash = _passwordHasher.HashPassword(usuario, dto.Senha);
 
             _context.Usuarios.Add(usuario);
-            _context.SaveChanges();
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao salvar usuário {Email}", dto.Email);
+                return BadRequest("Erro ao criar usuário");
+            }
 
             return Ok("Usuário criado com sucesso");
         }
@@ -63,21 +78,28 @@ namespace API_AGENDA.Controllers
         public async Task<ActionResult> Login(LoginDto login)
         {
             //mudar context parssar para service de autenticação
-            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == login.Email);//verifica email
-            if(usuario == null) return Unauthorized("Email ou senha Invalidos");
-            if(usuario.Ativo == false) return Unauthorized("Usuario inativo, contate o administrador");
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == login.Email);
 
+            if (usuario == null)
+            {
+                _logger.LogWarning("Tentativa de login com email inexistente: {Email}", login.Email);
+                return Unauthorized("Email ou senha inválidos");
+            }
 
-            var res = _passwordHasher.VerifyHashedPassword(
+            var resultado = _passwordHasher.VerifyHashedPassword(
                 usuario,
                 usuario.SenhaHash,
                 login.Senha
-                );//verifica senha
+            );
 
-            if (res == PasswordVerificationResult.Failed)
+            if (resultado == PasswordVerificationResult.Failed)
             {
-                return Unauthorized("Credenciais Invalidas");
-            }//verifica se email e senha estao corretos
+                _logger.LogWarning("Senha incorreta para o usuário {Email}", login.Email);
+                return Unauthorized("Email ou senha inválidos");
+            }
+
+
+            _logger.LogWarning("Usuário {Email} fez login", login.Email);
 
             //token gerado acess
             var token = _tokenService.CreateToken(usuario);
@@ -110,14 +132,14 @@ namespace API_AGENDA.Controllers
         [HttpPost("refresh")]
         public async Task<ActionResult> RefreshToken(RefreshRequestDto dto)
         {
-            var refresTokenDB= await _context.RefreshTokens.Include(r => r.Usuario).FirstOrDefaultAsync(r => r.Token == dto.RefreshToken);
+            var refresTokenDB = await _context.RefreshTokens.Include(r => r.Usuario).FirstOrDefaultAsync(r => r.Token == dto.RefreshToken);
             if(refresTokenDB == null || refresTokenDB.Revogado || refresTokenDB.ExpiraEm < DateTime.UtcNow)
             {
                 return Unauthorized("Refresh token inválido");
             }
 
             //gera novo token acess
-            var token = _tokenService.CreateToken(refresTokenDB.Usuario);
+            var token = _tokenService.CreateToken(refresTokenDB.Usuario!);
 
             //revoga o refresh token antigo
             refresTokenDB.Revogado = true;
@@ -133,7 +155,15 @@ namespace API_AGENDA.Controllers
             };
 
             _context.RefreshTokens.Add(refreshTokenModel);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao atualizar refresh token para usuário {Email}", refresTokenDB.Usuario.Email);
+                return BadRequest("Erro ao atualizar refresh token");
+            }
 
             return Ok(new LoginResponseDto
             {
