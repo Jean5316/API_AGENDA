@@ -62,10 +62,11 @@ namespace API_AGENDA.Controllers
             try
             {
                 _context.SaveChanges();
+                _logger.LogInformation("Novo usuário criado com sucesso - ID:{UsuarioId} Nome:{UsuarioNome} Email:{Email} Role:{Role}", usuario.Id, usuario.Name, dto.Email, dto.Role);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao salvar usuário {Email}", dto.Email);
+                _logger.LogError(ex, "Erro ao salvar usuário ID:{UsuarioId} Nome:{UsuarioNome} Email:{Email}", usuario.Id, usuario.Name, dto.Email);
                 return BadRequest("Erro ao criar usuário");
             }
 
@@ -94,12 +95,11 @@ namespace API_AGENDA.Controllers
 
             if (resultado == PasswordVerificationResult.Failed)
             {
-                _logger.LogWarning("Senha incorreta para o usuário {Email}", login.Email);
+                _logger.LogWarning("Senha incorreta para o usuário ID:{UsuarioId} Nome:{UsuarioNome} Email:{Email}", usuario.Id, usuario.Name, login.Email);
                 return Unauthorized("Email ou senha inválidos");
             }
 
-
-            _logger.LogWarning("Usuário {Email} fez login", login.Email);
+            _logger.LogInformation("Usuário ID:{UsuarioId} Nome:{UsuarioNome} Email:{Email} fez login com sucesso", usuario.Id, usuario.Name, login.Email);
 
             //token gerado acess
             var token = _tokenService.CreateToken(usuario);
@@ -158,10 +158,11 @@ namespace API_AGENDA.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                _logger.LogInformation("Refresh token atualizado com sucesso para usuário ID:{UsuarioId} Nome:{UsuarioNome} Email:{Email}", refresTokenDB.Usuario.Id, refresTokenDB.Usuario.Name, refresTokenDB.Usuario.Email);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao atualizar refresh token para usuário {Email}", refresTokenDB.Usuario.Email);
+                _logger.LogError(ex, "Erro ao atualizar refresh token para usuário ID:{UsuarioId} Nome:{UsuarioNome} Email:{Email}", refresTokenDB.Usuario.Id, refresTokenDB.Usuario.Name, refresTokenDB.Usuario.Email);
                 return BadRequest("Erro ao atualizar refresh token");
             }
 
@@ -172,14 +173,6 @@ namespace API_AGENDA.Controllers
                 Token = token,
                 RefreshToken = novoRefreshToken
             });
-
-
-
-
-
         }
-
-
-
     }
 }

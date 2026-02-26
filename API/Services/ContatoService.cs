@@ -2,6 +2,7 @@
 using API_AGENDA.Models;
 using API_AGENDA.Repository.Interfaces;
 using API_AGENDA.Services.Interfaces;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 
 namespace API_AGENDA.Services
@@ -41,12 +42,13 @@ namespace API_AGENDA.Services
 
         public async Task<ContatoResponseDto> CriarContato(ContatoCriarDto dto, int usuarioId)
         {
+
             var contato = new Contato
             {
-                Nome = dto.Nome,
-                Email = dto.Email,
-                Telefone = dto.Telefone,
-                Categoria = dto.Categoria,
+                Nome = dto.Nome!,
+                Email = dto.Email!,
+                Telefone = dto.Telefone!,
+                Categoria = dto.Categoria!,
                 Favorito = dto.Favorito,
                 UsuarioId = usuarioId
             };
@@ -56,10 +58,10 @@ namespace API_AGENDA.Services
 
             return new ContatoResponseDto
             {
-                Id = contato.Id,
-                Nome = contato.Nome,
-                Telefone = contato.Telefone,
-                Categoria = contato.Categoria,
+                Id = contato.Id!,
+                Nome = contato.Nome!,
+                Telefone = contato.Telefone!,
+                Categoria = contato.Categoria!,
                 Favorito = contato.Favorito,
 
             };
@@ -88,7 +90,7 @@ namespace API_AGENDA.Services
             var contato = await _repository.GetContatoByIdAsync(id, usuarioId);
             if (contato == null)
             {
-                return null;
+                return null!;
             }
             return new ContatoResponseDto
             {
