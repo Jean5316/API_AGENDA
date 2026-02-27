@@ -18,7 +18,7 @@ using System.Text;
 using Serilog;
 using Serilog.Events;
 
-
+Log.Information("Iniciando API Agenda...");
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -67,16 +67,21 @@ builder.Services.AddOpenApi(options =>
 builder.Services.AddControllers();//Obrigaorio para mostrar no swagger
 
 Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Information()
+    .MinimumLevel.Debug()
+    .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.EntityFrameworkCore", Serilog.Events.LogEventLevel.Warning)
+    .Enrich.FromLogContext()
+    .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
 
 
 
     // Log geral
     .WriteTo.File($"Logs/{DateTime.Now.ToString("yyyy-MM-dd")}/geral-.txt",
-        rollingInterval: RollingInterval.Day,
+        retainedFileCountLimit: null,
+        rollOnFileSizeLimit: true,
+        fileSizeLimitBytes: 10_000_000,
         shared: true,
-        outputTemplate:
-         "{Timestamp:yyyy-MM-dd HH:mm:ss} | [{Level}] | {SourceContext} | {Message:lj}{NewLine}{Exception}")
+        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} | [{Level:u3}] | {Message:lj}{NewLine}{Exception}")
 
     // Log apenas AdminController
     .WriteTo.Logger(lc => lc
@@ -84,10 +89,11 @@ Log.Logger = new LoggerConfiguration()
             e.Properties.ContainsKey("SourceContext") &&
             e.Properties["SourceContext"].ToString().Contains("AdminController"))
         .WriteTo.File($"Logs/{DateTime.Now.ToString("yyyy-MM-dd")}/admin-.txt",
-            rollingInterval: RollingInterval.Day,
+            retainedFileCountLimit: null,
+            rollOnFileSizeLimit: true,
+            fileSizeLimitBytes: 10_000_000,
             shared: true,
-            outputTemplate:
-        "{Timestamp:yyyy-MM-dd HH:mm:ss} | [{Level}] | {SourceContext} | {Message:lj}{NewLine}{Exception}"))
+            outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} | [{Level:u3}] | {Message:lj}{NewLine}{Exception}"))
 
     // Log apenas AuthController
     .WriteTo.Logger(lc => lc
@@ -95,10 +101,12 @@ Log.Logger = new LoggerConfiguration()
             e.Properties.ContainsKey("SourceContext") &&
             e.Properties["SourceContext"].ToString().Contains("AuthController"))
         .WriteTo.File($"Logs/{DateTime.Now.ToString("yyyy-MM-dd")}/auth-.txt",
-            rollingInterval: RollingInterval.Day,
+            retainedFileCountLimit: null,
+            rollOnFileSizeLimit: true,
+            fileSizeLimitBytes: 10_000_000,
             shared: true,
-            outputTemplate:
-         "{Timestamp:yyyy-MM-dd HH:mm:ss} | [{Level}] | {SourceContext} | {Message:lj}{NewLine}{Exception}"))
+            outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} | [{Level:u3}] | {Message:lj}{NewLine}{Exception}"))
+
 
     // Log apenas ContatosController
     .WriteTo.Logger(lc => lc
@@ -106,10 +114,11 @@ Log.Logger = new LoggerConfiguration()
             e.Properties.ContainsKey("SourceContext") &&
             e.Properties["SourceContext"].ToString().Contains("ContatosController"))
         .WriteTo.File($"Logs/{DateTime.Now.ToString("yyyy-MM-dd")}/contatos-.txt",
-            rollingInterval: RollingInterval.Day,
+            retainedFileCountLimit: null,
+            rollOnFileSizeLimit: true,
+            fileSizeLimitBytes: 10_000_000,
             shared: true,
-            outputTemplate:
-         "{Timestamp:yyyy-MM-dd HH:mm:ss} | [{Level}] | {SourceContext} | {Message:lj}{NewLine}{Exception}"))
+            outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} | [{Level:u3}] | {Message:lj}{NewLine}{Exception}"))
 
     .CreateLogger();
 
@@ -143,6 +152,21 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = jwtSettings["Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(key),
         ClockSkew = TimeSpan.Zero,
+    };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnAuthenticationFailed = context =>
+            {
+                Log.Warning("Falha na autenticação JWT: {Erro}", context.Exception.Message);
+                return Task.CompletedTask;
+            },
+            OnTokenValidated = context =>
+            {
+                var user = context.Principal?.Identity?.Name;
+                Log.Information("Token validado para o usuário: {Usuario}", user);
+                return Task.CompletedTask;
+            }
     };
 });// Configurações de autenticação JWT
 
@@ -237,12 +261,16 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("Angular");// Habilita o CORS com a política definida para o Angular
 app.UseHttpsRedirection();// Redireciona HTTP para HTTPS
-app.UseSerilogRequestLogging();// Habilita o middleware de logging de requisições do Serilog
+app.UseSerilogRequestLogging(options =>
+    {
+        options.MessageTemplate = "HTTP {RequestMethod} {RequestPath} → {StatusCode} ({Elapsed:0.0}ms)";
+    });
+// Habilita o middleware de logging de requisições do Serilog
 
 app.UseAuthentication();// Habilita a autenticação
 app.UseAuthorization();// Habilita a autorização
 app.MapControllers();//Obrigaorio para mostrar no swagger
-
+Log.Information("API Agenda iniciada com sucesso!");
 app.Run();
 
 
