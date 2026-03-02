@@ -8,65 +8,89 @@
 [![Swagger/Scalar](https://img.shields.io/badge/Scalar-8B5CF6?style=flat-square)](https://scalar.com/)
 [![Testes](https://img.shields.io/badge/Testes-MSTest-004880?style=flat-square&logo=microsoft&logoColor=white)](https://docs.microsoft.com/pt-br/dotnet/core/testing/)
 
-API REST desenvolvida em **ASP.NET Core** com autenticação via **JWT (JSON Web Token)**.
-Esta API é consumida por um frontend em **Angular 21**, responsável pelo login, proteção de rotas e gerenciamento de contatos.
+API REST para **gerenciamento de agenda de contatos**, desenvolvida em **ASP.NET Core 10** com autenticação via **JWT (JSON Web Token)**, **Entity Framework Core** e **SQLite**.  
+O backend é consumido por um frontend em **Angular 21**, responsável pelo fluxo de autenticação, proteção de rotas e interface de gerenciamento de contatos.
+
+---
+
+## 📚 Sumário
+
+- [Tecnologias utilizadas](#-tecnologias-utilizadas)
+- [Features implementadas](#-features-implementadas)
+- [Estrutura do projeto](#-estrutura-do-projeto)
+- [Configuração](#-configuração)
+- [Requisitos](#-requisitos)
+- [Como executar](#️-como-executar)
+- [Executando testes](#-executando-testes)
+- [Autenticação JWT](#-autenticação-jwt)
+- [Endpoints principais](#-endpoints-principais)
+- [Roadmap](#-roadmap)
+- [Integração com frontend](#-integração-com-frontend)
+- [Anotações técnicas](#-anotações-técnicas)
+- [Contribuição](#-contribuição)
+- [Autor](#-autor)
+- [Licença](#-licença)
 
 ---
 
 ## 🚀 Tecnologias utilizadas
 
-- ASP.NET Core 10.0
-- C#
-- Entity Framework Core
-- JWT (JSON Web Token) com Refresh Token
-- Scalar (OpenAPI/Swagger alternativo)
-- SQLite
-- MSTest (testes automatizados)
-- Arquitetura Repository Pattern + Service Layer
+- **ASP.NET Core 10.0**
+- **C#**
+- **Entity Framework Core**
+- **JWT (JSON Web Token)** com Refresh Token
+- **Scalar** (documentação OpenAPI / alternativa ao Swagger)
+- **SQLite**
+- **MSTest** (testes automatizados)
+- Arquitetura **Repository Pattern** + **Service Layer**
 
 ---
 
-## 🎯 Features Implementadas
+## 🎯 Features implementadas
 
-### ✅ Autenticação e Autorização
+### ✅ Autenticação e autorização
+
 - [x] Login com email e senha
 - [x] Geração de JWT Token
 - [x] Refresh Token para renovação de sessão
-- [x] Roles & Permissões (Admin, User)
-- [x] Hash de senhas com PBKDF2
+- [x] Controle de roles e permissões (`Admin`, `User`)
+- [x] Hash de senha com **PBKDF2**
 
-### ✅ Gerenciamento de Contatos
+### ✅ Gerenciamento de contatos
+
 - [x] CRUD completo de contatos
-- [x] Relacionamento entre Contatos e Usuário
+- [x] Relacionamento entre contatos e usuário autenticado
 - [x] Busca por nome
 - [x] Paginação de resultados
-- [x] Contatos favoritos
+- [x] Marcação de contatos favoritos
 - [x] Validações de dados
 
-### ✅ Área Administrativa
-- [x] Listar usuários
-- [x] Alterar usuários
-- [x] Deletar usuários (requer role Admin)
+### ✅ Área administrativa
 
-### ✅ Estrutura e Qualidade
+- [x] Listagem de usuários
+- [x] Atualização de dados de usuários
+- [x] Exclusão de usuários (somente `Admin`)
+
+### ✅ Estrutura e qualidade
+
 - [x] Repository Pattern
 - [x] Service Layer
 - [x] DTOs para transferência de dados
 - [x] Injeção de dependência
-- [x] Configuração via appsettings.json
-- [x] Middleware CORS para Angular
+- [x] Configuração via `appsettings.json`
+- [x] Middleware de CORS para consumo pelo Angular
 
 ---
 
-## 📁 Estrutura do Projeto
+## 📁 Estrutura do projeto
 
-```
+```txt
 API_AGENDA/
-├── API/                          # Projeto principal
+├── API/                          # Projeto principal (backend)
 │   ├── Controllers/              # Controladores da API
 │   │   ├── AuthController.cs      # Endpoints de autenticação
-│   │   ├── ContatosController.cs # Endpoints de contatos
-│   │   └── AdminController.cs    # Endpoints administrativos
+│   │   ├── ContatosController.cs  # Endpoints de contatos
+│   │   └── AdminController.cs     # Endpoints administrativos
 │   ├── Services/                 # Camada de serviços
 │   ├── Repository/               # Repositórios (acesso a dados)
 │   ├── Models/                   # Entidades do banco
@@ -74,18 +98,17 @@ API_AGENDA/
 │   ├── Context/                  # DbContext do EF Core
 │   ├── Migrations/               # Migrações do banco
 │   └── Program.cs                # Configuração da aplicação
-├── Teste/                        # Projeto de testes
-└── README.md                     # Este arquivo
+├── Teste/                        # Projeto de testes automatizados
+└── README.md                     # Documentação do projeto
 ```
 
 ---
 
 ## ⚙️ Configuração
 
-### appsettings.json
+### `appsettings.json`
 
-```
-json
+```json
 {
   "Logging": {
     "LogLevel": {
@@ -105,199 +128,220 @@ json
 }
 ```
 
-> ⚠️ **Importante**: Altere a chave JWT (`Key`) para um valor seguro em produção!
+> ⚠️ **Importante**: altere a chave JWT (`Jwt:Key`) para um valor seguro em produção (de preferência usando variáveis de ambiente ou um provider seguro de segredos).
 
 ---
 
 ## 📋 Requisitos
 
-- .NET 10.0 SDK
-- Visual Studio 2022+ ou VS Code (extensões C#)
-- (Opcional) Docker
+- **.NET 10.0 SDK**
+- **Visual Studio 2022+** ou **VS Code** (com extensões C#)
+- (Opcional) **Docker** para containerização
 
 ---
 
 ## ▶️ Como executar
 
-1. **Clone o repositório**
+1. **Clonar o repositório**
 
-```
-bash
+```bash
 git clone https://github.com/Jean5316/API_AGENDA.git
 cd API_AGENDA
 ```
 
-2. **Restaure as dependências**
+2. **Restaurar as dependências**
 
-```
-bash
+```bash
 dotnet restore
 ```
 
-3. **Execute a aplicação**
+3. **Aplicar migrações (se necessário)**
 
+```bash
+cd API
+dotnet ef database update
 ```
-bash
+
+4. **Executar a aplicação**
+
+```bash
 cd API
 dotnet run
 ```
 
-4. **Acesse a documentação interativa**
+5. **Acessar a documentação interativa (Scalar)**
 
-```
+```text
 https://localhost:{porta}/scalar/v1
 ```
 
 ---
 
-## 🧪 Executando Testes
+## 🧪 Executando testes
 
-O projeto inclui testes automatizados com MSTest.
+O projeto inclui testes automatizados com **MSTest**.
 
-```
-bash
+```bash
 cd Teste
 dotnet test
 ```
 
 ---
 
-## 🔐 Autenticação (JWT)
+## 🔐 Autenticação JWT
 
-A API utiliza JWT Bearer Token para proteger endpoints.
+A API utiliza **JWT Bearer Token** para proteger os endpoints.
 
-### Fluxo de Autenticação
+### Fluxo de autenticação
 
-1. Usuário envia `email` e `senha` para `/api/auth/login`
-2. API valida credenciais e retorna um token JWT + refresh token
-3. Frontend armazena o token e o envia no header `Authorization: Bearer {token}`
-4. Quando o token expira, use `/api/auth/refresh` para obter um novo
+1. O usuário envia `email` e `senha` para `/api/auth/login`;
+2. A API valida as credenciais e retorna um **JWT** + **refresh token**;
+3. O frontend armazena o token e o envia no header `Authorization: Bearer {token}`;
+4. Quando o token expira, o cliente usa `/api/auth/refresh` para obter um novo token de acesso.
 
-### Endpoints de Autenticação
+### Endpoints de autenticação
 
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| POST | `/api/auth/register` | Registra um novo usuário |
-| POST | `/api/auth/login` | Autentica e retorna tokens |
-| POST | `/api/auth/refresh` | Renova o token de acesso |
+| Método | Endpoint               | Descrição                     |
+|--------|------------------------|-------------------------------|
+| POST   | `/api/auth/register`   | Registra um novo usuário      |
+| POST   | `/api/auth/login`      | Autentica e retorna tokens    |
+| POST   | `/api/auth/refresh`    | Renova o token de acesso      |
 
-### Exemplo de Login
+### Exemplo de login
 
-**Request:**
-```
-json
+**Request**
+
+```http
 POST /api/auth/login
+Content-Type: application/json
+
 {
   "email": "usuario@teste.com",
   "senha": "123456"
 }
 ```
 
-**Response:**
-```
-json
+**Response**
+
+```json
 {
   "token": "eyJhbGciOiJIUzI1NiIs...",
   "refreshToken": "def50200abc123..."
 }
 ```
 
-### Protegendo Endpoints
+### Protegendo endpoints
 
 Use o atributo `[Authorize]` nos controllers:
 
-```
-csharp
-[Authorize]           // Requer autenticação
-[Authorize(Roles = "Admin")]  // Requer role específica
+```csharp
+[Authorize]                    // Requer autenticação
+[Authorize(Roles = "Admin")]   // Requer role específica
 ```
 
-Sem token válido, a API retorna `401 Unauthorized`.
+Sem token válido, a API retorna **`401 Unauthorized`**.
 
 ---
 
-## 📌 Endpoints Principais
+## 📌 Endpoints principais
 
-Todos os endpoints (exceto autenticação) exigem token JWT válido.
+Todos os endpoints (exceto autenticação) exigem um token JWT válido.
 
 ### Contatos (`/api/contatos`)
 
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| GET | `/api/contatos` | Lista todos os contatos do usuário |
-| GET | `/api/contatos/{id}` | Obtém contato por ID |
-| GET | `/api/contatos/buscar?nome={termo}` | Busca por nome |
-| GET | `/api/contatos/favoritos` | Lista favoritos |
-| GET | `/api/contatos/paginacao?pagina=1&tamanhoPagina=10` | Lista paginada |
-| POST | `/api/contatos` | Cria novo contato |
-| PUT | `/api/contatos/AtualizarContato/{id}` | Atualiza contato |
-| DELETE | `/api/contatos/DeletarContato/{id}` | Remove contato |
+| Método | Endpoint                                               | Descrição                          |
+|--------|--------------------------------------------------------|------------------------------------|
+| GET    | `/api/contatos`                                       | Lista todos os contatos do usuário |
+| GET    | `/api/contatos/{id}`                                  | Obtém contato por ID               |
+| GET    | `/api/contatos/buscar?nome={termo}`                   | Busca por nome                     |
+| GET    | `/api/contatos/favoritos`                             | Lista contatos favoritos           |
+| GET    | `/api/contatos/paginacao?pagina=1&tamanhoPagina=10`   | Lista paginada                     |
+| POST   | `/api/contatos`                                       | Cria um novo contato               |
+| PUT    | `/api/contatos/AtualizarContato/{id}`                 | Atualiza um contato existente      |
+| DELETE | `/api/contatos/DeletarContato/{id}`                   | Remove um contato                  |
 
-### Administração (`/api/admin`) — Requer Role Admin
+### Administração (`/api/admin`) — requer role `Admin`
 
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| GET | `/api/admin/listar-usuarios` | Lista todos os usuários |
-| POST | `/api/admin/alterar-usuario?id={id}` | Altera dados do usuário |
-| DELETE | `/api/admin/deletar-usuario/{id}` | Deleta usuário |
+| Método | Endpoint                                  | Descrição                 |
+|--------|-------------------------------------------|---------------------------|
+| GET    | `/api/admin/listar-usuarios`             | Lista todos os usuários   |
+| POST   | `/api/admin/alterar-usuario?id={id}`     | Altera dados do usuário   |
+| DELETE | `/api/admin/deletar-usuario/{id}`        | Exclui um usuário         |
 
 ---
 
 ## 🗺️ Roadmap
 
 ### ✅ Concluídos
+
 - [x] Autenticação JWT
 - [x] Refresh Token
 - [x] Roles & Permissões
-- [x] CRUD de Contatos
+- [x] CRUD de contatos
 - [x] Busca por nome
 - [x] Paginação
-- [x] Área Administrativa
-- [x] Relacionamento Usuário-Contato
+- [x] Área administrativa
+- [x] Relacionamento usuário-contato
 - [x] Validações
-- [x] Documentação OpenAPI/Scalar
+- [x] Documentação OpenAPI / Scalar
 - [x] Testes básicos
 
-### ⏳ Próximos Passos
+### ⏳ Próximos passos
+
 - [ ] Logging estruturado
 - [ ] Tratamento global de erros
-- [ ] Cobertura de testes
+- [ ] Aumento da cobertura de testes
 - [ ] Dockerização
 - [ ] Deploy em nuvem
 
 ---
 
-## 🔗 Integração com Frontend
+## 🔗 Integração com frontend
 
-O frontend em Angular utiliza:
-- **HTTP Interceptor**: Adiciona automaticamente o header `Authorization`
-- **AuthGuard**: Protege rotas que exigem autenticação
+O frontend em **Angular 21** utiliza:
+
+- **HTTP Interceptor**: adiciona automaticamente o header `Authorization`;
+- **AuthGuard**: protege rotas que exigem autenticação;
+- Mecanismos de armazenamento seguro para tokens (ex.: `localStorage` ou outra estratégia configurada).
 
 Repositório do frontend:
-🔗 [https://github.com/Jean5316/agenda-front]
+
+- [`agenda-front`](https://github.com/Jean5316/agenda-front)
 
 ---
 
-## 📝 Anotações Técnicas
+## 📝 Anotações técnicas
 
 ### Regex para validação de telefone
-```
-csharp
+
+```csharp
 @"^\(\d{2}\)\d{4,5}-\d{4}$"
 // Exemplo: (11)99999-9999
 ```
 
 ---
 
+## 🤝 Contribuição
+
+Contribuições são bem-vindas!  
+Para contribuir:
+
+1. Faça um **fork** do repositório;
+2. Crie uma branch para sua feature ou correção:  
+   `git checkout -b feature/minha-feature`;
+3. Implemente suas alterações e adicione testes (quando aplicável);
+4. Envie um **pull request** com uma descrição clara do que foi feito.
+
+---
+
 ## 👨‍💻 Autor
 
-Desenvolvido por **Jean Carlo**
+Desenvolvido por **Jean Carlo**.
 
 [![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/Jean5316)
-
 
 ---
 
 ## 📄 Licença
 
-Este projeto está sob a licença MIT.
+Este projeto está licenciado sob os termos da licença **MIT**. Consulte o arquivo `LICENSE` (se aplicável) para mais detalhes.
