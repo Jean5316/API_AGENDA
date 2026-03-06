@@ -9,7 +9,7 @@ namespace API.Services.Interfaces
     public interface IAdminService
     {
          Task<List<UsuarioResponseDto>> ListarUsuarios();
-          Task<bool> AtualizarUsuario(UsuarioAtualizarDto dto, int id);
-           Task<bool> DeletarUsuario(int id);
+          Task<bool> AtualizarUsuario(UsuarioAtualizarDto dto, Guid id);
+           Task<bool> DeletarUsuario(Guid id);
     }
 }

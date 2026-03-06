@@ -15,7 +15,7 @@ namespace API.Services
         {
             _usuarioRepository = usuarioRepository;
         }
-        public async Task<bool> AtualizarUsuario(UsuarioAtualizarDto dto, int id)
+        public async Task<bool> AtualizarUsuario(UsuarioAtualizarDto dto, Guid id)
         {
             var usuario = await _usuarioRepository.GetUsuarioByIdAsync(id);
             if (usuario == null)
@@ -32,7 +32,7 @@ namespace API.Services
             return true;
         }
 
-        public async Task<bool> DeletarUsuario(int id)
+        public async Task<bool> DeletarUsuario(Guid id)
         {
             var usuario = await _usuarioRepository.GetUsuarioByIdAsync(id);
 

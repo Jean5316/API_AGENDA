@@ -38,7 +38,7 @@ namespace API.Repository
 
         }
 
-        public async Task<Usuario?> GetUsuarioByIdAsync(int id)
+        public async Task<Usuario?> GetUsuarioByIdAsync(Guid id)
         {
             return await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
         }

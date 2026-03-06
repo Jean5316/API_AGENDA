@@ -8,7 +8,7 @@ namespace API_AGENDA.Models
 {
     public class Usuario
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         public bool Ativo { get; set; } = true;
 

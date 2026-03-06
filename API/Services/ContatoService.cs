@@ -18,7 +18,7 @@ namespace API_AGENDA.Services
 
 
 
-        public async Task<bool> AtualizarContato(ContatoAtualizarDto dto, int id, int usuarioId)
+        public async Task<bool> AtualizarContato(ContatoAtualizarDto dto, int id, Guid usuarioId)
         {
             var contato = await _repository.GetContatoByIdAsync(id, usuarioId);
 
@@ -40,7 +40,7 @@ namespace API_AGENDA.Services
 
         }
 
-        public async Task<ContatoResponseDto> CriarContato(ContatoCriarDto dto, int usuarioId)
+        public async Task<ContatoResponseDto> CriarContato(ContatoCriarDto dto, Guid usuarioId)
         {
 
             var contato = new Contato
@@ -69,7 +69,7 @@ namespace API_AGENDA.Services
 
         }
 
-        public async Task<bool> DeletarContato(int id, int usuarioId)
+        public async Task<bool> DeletarContato(int id, Guid usuarioId)
         {
             var contato = await _repository.GetContatoByIdAsync(id, usuarioId);
 
@@ -85,7 +85,7 @@ namespace API_AGENDA.Services
 
         }
 
-        public async Task<ContatoResponseDto> ListarContato(int id, int usuarioId)
+        public async Task<ContatoResponseDto> ListarContato(int id, Guid usuarioId)
         {
             var contato = await _repository.GetContatoByIdAsync(id, usuarioId);
             if (contato == null)
@@ -105,7 +105,7 @@ namespace API_AGENDA.Services
 
         }
 
-        public async Task<List<ContatoResponseDto>> ListarContatos(int usuarioId)
+        public async Task<List<ContatoResponseDto>> ListarContatos(Guid usuarioId)
         {
             var contatos = await _repository.GetAllContatosAsync(usuarioId);
 
@@ -122,7 +122,7 @@ namespace API_AGENDA.Services
 
         }
 
-        public async Task<List<ContatoResponseDto>> ListarFavoritos(int usuarioId)
+        public async Task<List<ContatoResponseDto>> ListarFavoritos(Guid usuarioId)
         {
             var contatos = await _repository.GetFavoritosAsync(usuarioId);
             return contatos.Select(c => new ContatoResponseDto
@@ -137,7 +137,7 @@ namespace API_AGENDA.Services
 
         }
 
-        public async Task<PaginacaoResponse<ContatoResponseDto>> ListarPaginadoAsync(int usuarioId, int pagina, int tamanhoPagina)
+        public async Task<PaginacaoResponse<ContatoResponseDto>> ListarPaginadoAsync(Guid usuarioId, int pagina, int tamanhoPagina)
         {
             if (pagina <= 0) pagina = 1;
 
@@ -163,7 +163,7 @@ namespace API_AGENDA.Services
             };
         }
 
-        public async Task<List<ContatoResponseDto>> ListarPorNome(string Nome, int usuarioId)
+        public async Task<List<ContatoResponseDto>> ListarPorNome(string Nome, Guid usuarioId)
         {
             var contatos = await _repository.GetName(Nome, usuarioId);
             return contatos.Select(c => new ContatoResponseDto

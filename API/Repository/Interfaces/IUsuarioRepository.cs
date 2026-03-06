@@ -11,6 +11,6 @@ namespace API.Repository.Interfaces
         Task<List<Usuario>> GetAllUsuariosAsync();
          Task UpdateUsuarioAsync(Usuario usuario);
          Task DeleteUsuarioAsync(Usuario usuario);
-         Task<Usuario?> GetUsuarioByIdAsync(int id);
+         Task<Usuario?> GetUsuarioByIdAsync(Guid id);
     }
 }

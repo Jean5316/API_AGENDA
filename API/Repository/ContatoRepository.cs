@@ -20,16 +20,16 @@ namespace API_AGENDA.Repository
             _context = context;
         }
 
-        public async Task<List<Contato>> GetAllContatosAsync(int usuarioId)
+        public async Task<List<Contato>> GetAllContatosAsync(Guid usuarioId)
         {
             return await _context.Contatos.Where(c => c.UsuarioId == usuarioId).ToListAsync();
         }
-        public async Task<Contato?> GetContatoByIdAsync(int id, int usuarioId)
+        public async Task<Contato?> GetContatoByIdAsync(int id, Guid usuarioId)
         {
             return await _context.Contatos.FirstOrDefaultAsync(c => c.Id == id && c.UsuarioId == usuarioId);
         }
 
-        public async Task<List<Contato>> GetFavoritosAsync(int usuarioId)
+        public async Task<List<Contato>> GetFavoritosAsync(Guid usuarioId)
         {
             return await _context.Contatos.Where(c => c.Ativo && c.Favorito && c.UsuarioId == usuarioId).ToListAsync();
         }
@@ -53,13 +53,13 @@ namespace API_AGENDA.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Contato>> GetName(string Nome, int usuarioId)
+        public async Task<List<Contato>> GetName(string Nome, Guid usuarioId)
         {
            return await _context.Contatos.Where(c => c.UsuarioId == usuarioId && c.Nome.ToLower().StartsWith(Nome.ToLower())).ToListAsync();
 
         }
 
-        public async Task<PaginacaoResponse<Contato>> ListaPaginadoAsync(int usuarioId, int pagina, int tamanhoPagina)
+        public async Task<PaginacaoResponse<Contato>> ListaPaginadoAsync(Guid usuarioId, int pagina, int tamanhoPagina)
         {
             var query = _context.Contatos.Where(c => c.UsuarioId == usuarioId);
             

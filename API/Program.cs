@@ -251,6 +251,7 @@ if (app.Environment.IsDevelopment())
 
          .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient)// Configura o HttpClient para a linguagem C# (pode ser ajustado para outras linguagens, se necessário)
          .WithOpenApiRoutePattern("/openapi/v1.json");//direciona o scalar para home e indica qual arquivo de documentação.
+         
 
 
     });
@@ -260,7 +261,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("Angular");// Habilita o CORS com a política definida para o Angular
-app.UseHttpsRedirection();// Redireciona HTTP para HTTPS
+//app.UseHttpsRedirection();// Redireciona HTTP para HTTPS
 app.UseSerilogRequestLogging(options =>
     {
         options.MessageTemplate = "HTTP {RequestMethod} {RequestPath} → {StatusCode} ({Elapsed:0.0}ms)";

@@ -22,10 +22,10 @@ namespace API_AGENDA.Controllers
         }
 
         //função para pegar o id do usuário logado a partir dos claims do token JWT
-        private int getUsuarioId()
+        private Guid getUsuarioId()
         {
             var claim = User.FindFirst("id");
-            return int.Parse(claim!.Value);
+            return Guid.Parse(claim!.Value);
         }
 
         //função para pegar o nome do usuário logado a partir dos claims do token JWT

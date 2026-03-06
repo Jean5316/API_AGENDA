@@ -54,7 +54,7 @@ namespace API.Controllers
         }
 
         [HttpPost("alterar-usuario")]
-        public async Task<IActionResult> AtualizarUsuario(UsuarioAtualizarDto dto, int id)
+        public async Task<IActionResult> AtualizarUsuario(UsuarioAtualizarDto dto, Guid id)
         {
             var adminId = getAdminId();
             var adminNome = getAdminNome();
@@ -72,7 +72,7 @@ namespace API.Controllers
         }
 
         [HttpDelete("deletar-usuario/{id}")]
-        public async Task<IActionResult> DeletarUsuario(int id)
+        public async Task<IActionResult> DeletarUsuario(Guid id)
         {
             var adminId = getAdminId();
             var adminNome = getAdminNome();

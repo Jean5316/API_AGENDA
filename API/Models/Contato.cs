@@ -29,7 +29,7 @@ namespace API_AGENDA.Models
         public DateTime? DataAtualizacao { get; set; }
 
         //Relacionamento com outra tabela
-        public int UsuarioId { get; set; }
+        public Guid UsuarioId { get; set; }
 
         public Usuario? Usuario { get; set; }
     }

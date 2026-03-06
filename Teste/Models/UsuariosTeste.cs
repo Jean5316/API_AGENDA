@@ -12,12 +12,12 @@ public sealed class UsuariosTeste
         var usuario = new Usuario();
 
         //Act
-        usuario.Id = 1;
+        //usuario.Id = 1;
         usuario.Email ="jean@lucas.com";
         usuario.SenhaHash = "Teste";
         usuario.Role = "Admin";
         //Assert
-        Assert.AreEqual(1, usuario.Id);
+        //Assert.AreEqual(1, usuario.Id);
         Assert.AreEqual("jean@lucas.com", usuario.Email);
         Assert.AreEqual("Teste", usuario.SenhaHash);
         Assert.AreEqual("Admin", usuario.Role);
