@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using API_AGENDA.Models;
 
 namespace API_AGENDA.DTOs
 {
@@ -18,16 +19,15 @@ namespace API_AGENDA.DTOs
         ErrorMessage = "Telefone inválido.")]
         [DefaultValue("string")]
         public string Telefone { get; set; } = string.Empty;
+        
         [MaxLength(150)]
         [Required(ErrorMessage = "O email é obrigatório")]
         [EmailAddress(ErrorMessage = "Email em formato inválido")]
         [DefaultValue("string")]
 
         public string Email { get; set; } = string.Empty;
-
-        [MaxLength(50)]
-        [DefaultValue("string")]
-        public string Categoria { get; set; } = string.Empty;
+        public EnumCategorias Categoria { get; set; } = EnumCategorias.Padrao;
+        
         [DefaultValue(false)]
         public bool Favorito { get; set; } = false;
     }

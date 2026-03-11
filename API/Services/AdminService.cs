@@ -17,7 +17,7 @@ namespace API.Services
         }
         public async Task<bool> AtualizarUsuario(UsuarioAtualizarDto dto, Guid id)
         {
-            var usuario = await _usuarioRepository.GetUsuarioByIdAsync(id);
+            var usuario = await _usuarioRepository.GetByIdAsync(id);
             if (usuario == null)
             {
               return false;
@@ -28,23 +28,23 @@ namespace API.Services
             usuario.Role = dto.Role;
             usuario.Ativo = dto.Ativo;
 
-            await _usuarioRepository.UpdateUsuarioAsync(usuario);
+            await _usuarioRepository.UpdateAsync(usuario);
             return true;
         }
 
         public async Task<bool> DeletarUsuario(Guid id)
         {
-            var usuario = await _usuarioRepository.GetUsuarioByIdAsync(id);
+            var usuario = await _usuarioRepository.GetByIdAsync(id);
 
             if (usuario == null) return false;
 
-            await _usuarioRepository.DeleteUsuarioAsync(usuario);
+            await _usuarioRepository.DeleteAsync(usuario);
             return true;
         }
 
         public async Task<List<UsuarioResponseDto>> ListarUsuarios()
         {
-           var usuarios = await _usuarioRepository.GetAllUsuariosAsync();
+           var usuarios = await _usuarioRepository.GetAllAsync();
            return usuarios.Select(u => new UsuarioResponseDto
            {
                Id = u.Id,

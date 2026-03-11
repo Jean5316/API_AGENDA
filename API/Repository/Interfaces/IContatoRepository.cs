@@ -7,14 +7,14 @@ using API_AGENDA.Models;
 
 namespace API_AGENDA.Repository.Interfaces
 {
-    public interface IContatoRepository
+    public interface IContatoRepository : IRepository<Contato>
     {
-        Task<List<Contato>> GetAllContatosAsync(Guid usuarioId);
+        //Task<List<Contato>> GetAllContatosAsync(Guid usuarioId);
         Task<List<Contato>> GetFavoritosAsync(Guid usuarioId);
-        Task<Contato?> GetContatoByIdAsync(int id, Guid usuarioId);
-        Task AddContatoAsync(Contato contato);
-        Task UpdateContatoAsync(Contato contato);
-        Task DeleteContatoAsync(Contato contato);
+        //Task<Contato?> GetContatoByIdAsync(int id, Guid usuarioId);
+        //Task AddContatoAsync(Contato contato);
+        //Task UpdateContatoAsync(Contato contato);
+        //Task DeleteContatoAsync(Contato contato);
         Task<List<Contato>> GetName(string Nome, Guid usuarioId);
 
         Task<PaginacaoResponse<Contato>> ListaPaginadoAsync(Guid usuarioId, int pagina, int tamanhoPagina); 

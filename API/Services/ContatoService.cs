@@ -20,7 +20,7 @@ namespace API_AGENDA.Services
 
         public async Task<bool> AtualizarContato(ContatoAtualizarDto dto, int id, Guid usuarioId)
         {
-            var contato = await _repository.GetContatoByIdAsync(id, usuarioId);
+            var contato = await _repository.GetByIdAsync(id, usuarioId);
 
             if (contato == null || !contato.Ativo)
             {
@@ -34,7 +34,7 @@ namespace API_AGENDA.Services
             contato.Favorito = dto.Favorito;
             contato.DataAtualizacao = DateTime.Now;
 
-            await _repository.UpdateContatoAsync(contato);
+            await _repository.UpdateAsync(contato);
             return true;
 
 
@@ -42,7 +42,8 @@ namespace API_AGENDA.Services
 
         public async Task<ContatoResponseDto> CriarContato(ContatoCriarDto dto, Guid usuarioId)
         {
-
+            
+            //converte para entidade
             var contato = new Contato
             {
                 Nome = dto.Nome!,
@@ -54,8 +55,8 @@ namespace API_AGENDA.Services
             };
 
 
-            await _repository.AddContatoAsync(contato);
-
+            await _repository.AddAsync(contato);
+            //converte para dto
             return new ContatoResponseDto
             {
                 Id = contato.Id!,
@@ -71,7 +72,7 @@ namespace API_AGENDA.Services
 
         public async Task<bool> DeletarContato(int id, Guid usuarioId)
         {
-            var contato = await _repository.GetContatoByIdAsync(id, usuarioId);
+            var contato = await _repository.GetByIdAsync(id, usuarioId);
 
             if (contato == null)
             {
@@ -79,7 +80,7 @@ namespace API_AGENDA.Services
 
             }
 
-            await _repository.DeleteContatoAsync(contato);
+            await _repository.DeleteAsync(contato);
             return true;
 
 
@@ -87,7 +88,7 @@ namespace API_AGENDA.Services
 
         public async Task<ContatoResponseDto> ListarContato(int id, Guid usuarioId)
         {
-            var contato = await _repository.GetContatoByIdAsync(id, usuarioId);
+            var contato = await _repository.GetByIdAsync(id, usuarioId);
             if (contato == null)
             {
                 return null!;
@@ -107,7 +108,7 @@ namespace API_AGENDA.Services
 
         public async Task<List<ContatoResponseDto>> ListarContatos(Guid usuarioId)
         {
-            var contatos = await _repository.GetAllContatosAsync(usuarioId);
+            var contatos = await _repository.GetAllAsync(usuarioId);
 
             return contatos.Select(c => new ContatoResponseDto
             {

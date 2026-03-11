@@ -47,6 +47,10 @@ namespace API_AGENDA.Controllers
             var usuarioNome = getUsuarioNome();
             _logger.LogInformation("Usuário ID:{UsuarioId} Nome:{UsuarioNome} solicitou listar todos os contatos", usuarioId, usuarioNome);
             var contatos = await _service.ListarContatos(usuarioId);
+            if (contatos.Count == 0)
+            {
+                return NotFound("Nao existe clientes cadastrados!");
+            }
 
             return Ok(contatos);
         }

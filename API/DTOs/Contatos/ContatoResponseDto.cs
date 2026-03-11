@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using API_AGENDA.Models;
 
 namespace API_AGENDA.DTOs
 {
@@ -12,7 +13,7 @@ namespace API_AGENDA.DTOs
         public string Nome { get; set;} = string.Empty;
         public string Telefone { get; set;} = string.Empty;
         public string Email { get; set;} = string.Empty;
-        public string Categoria { get; set;} = string.Empty;
+        public EnumCategorias Categoria { get; set;}
         public bool Favorito { get; set;}
         
     }

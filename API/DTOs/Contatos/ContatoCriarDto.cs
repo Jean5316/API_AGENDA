@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using API_AGENDA.Models;
 
 namespace API_AGENDA.DTOs
 {
@@ -28,10 +29,7 @@ namespace API_AGENDA.DTOs
          [MaxLength(150)]
          [DefaultValue("string")]
         public string? Email { get; set;}
-
-        [MaxLength(50)]
-        [DefaultValue("string")]
-        public string? Categoria { get; set;}
+        public EnumCategorias Categoria { get; set; } = EnumCategorias.Padrao;
 
         [DefaultValue(false)]
         public bool Favorito { get; set;}

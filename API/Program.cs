@@ -15,6 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Scalar.AspNetCore;
 using System.Text;
+using System.Text.Json.Serialization;
 using Serilog;
 using Serilog.Events;
 
@@ -64,7 +65,11 @@ builder.Services.AddOpenApi(options =>
         return Task.CompletedTask;
     });
 });
-builder.Services.AddControllers();//Obrigaorio para mostrar no swagger
+builder.Services.AddControllers()//Obrigaorio para mostrar no swagger
+    .AddJsonOptions(options => {
+options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+
+    });
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
@@ -130,6 +135,7 @@ builder.Services.AddScoped<IContatoService, ContatoService>();//Injeção de dep
 builder.Services.AddScoped<ItokenService, TokenService>();//Injeção de dependencia do token service
 builder.Services.AddScoped<IAdminService, AdminService>();//Injeção de dependencia do admin service
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();//Injeção de dependencia do usuario repository
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 //Configurando autenticação JWT
 var jwtSettings = builder.Configuration.GetSection("Jwt");// busca configurações no appsettings

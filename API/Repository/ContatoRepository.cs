@@ -10,53 +10,84 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API_AGENDA.Repository
 {
-    public class ContatoRepository : IContatoRepository
+    public class ContatoRepository : Repository<Contato>, IContatoRepository
     {
         
-        private readonly AgendaContext _context;
-
-        public ContatoRepository(AgendaContext context)
+        public ContatoRepository(AgendaContext context) : base(context)
         {
-            _context = context;
+            
         }
 
-        public async Task<List<Contato>> GetAllContatosAsync(Guid usuarioId)
-        {
-            return await _context.Contatos.Where(c => c.UsuarioId == usuarioId).ToListAsync();
-        }
-        public async Task<Contato?> GetContatoByIdAsync(int id, Guid usuarioId)
-        {
-            return await _context.Contatos.FirstOrDefaultAsync(c => c.Id == id && c.UsuarioId == usuarioId);
-        }
-
+        // public async Task<List<Contato>> GetAllContatosAsync(Guid usuarioId)
+        // {
+        //     return await _context.Contatos.Where(c => c.UsuarioId == usuarioId).ToListAsync();
+        // }
+        // public async Task<Contato?> GetContatoByIdAsync(int id, Guid usuarioId)
+        // {
+        //     return await _context.Contatos.FirstOrDefaultAsync(c => c.Id == id && c.UsuarioId == usuarioId);
+        // }
+        //
+        // public async Task<List<Contato>> GetFavoritosAsync(Guid usuarioId)
+        // {
+        //     return await _context.Contatos.Where(c => c.Ativo && c.Favorito && c.UsuarioId == usuarioId).ToListAsync();
+        // }
+        //
+        //
+        // public async Task AddContatoAsync(Contato contato)
+        // {
+        //     _context.Contatos.Add(contato);
+        //     await _context.SaveChangesAsync();
+        // }
+        // public async Task UpdateContatoAsync(Contato contato)
+        // {
+        //     _context.Contatos.Update(contato);
+        //     await _context.SaveChangesAsync();
+        // }
+        // public async Task DeleteContatoAsync(Contato contato)
+        // {
+        //
+        //     _context.Contatos.Remove(contato);
+        //
+        //     await _context.SaveChangesAsync();
+        // }
+        //
+        // public async Task<List<Contato>> GetName(string Nome, Guid usuarioId)
+        // {
+        //    return await _context.Contatos.Where(c => c.UsuarioId == usuarioId && c.Nome.ToLower().StartsWith(Nome.ToLower())).ToListAsync();
+        //
+        // }
+        //
+        // public async Task<PaginacaoResponse<Contato>> ListaPaginadoAsync(Guid usuarioId, int pagina, int tamanhoPagina)
+        // {
+        //     var query = _context.Contatos.Where(c => c.UsuarioId == usuarioId);
+        //     
+        //     var totalRegistros = await query.CountAsync();
+        //
+        //     var dados = await query.OrderBy(c => c.Nome)
+        //                            .Skip((pagina - 1) * tamanhoPagina)
+        //                            .Take(tamanhoPagina)
+        //                            .ToListAsync();
+        //
+        //     return new PaginacaoResponse<Contato>
+        //     {
+        //         Pagina = pagina,
+        //         TamanhoPagina = tamanhoPagina,
+        //         TotalRegistros = totalRegistros,
+        //         TotalPaginas = (int)Math.Ceiling((double)totalRegistros / tamanhoPagina),
+        //         Dados = dados
+        //     };
+        // }
         public async Task<List<Contato>> GetFavoritosAsync(Guid usuarioId)
         {
-            return await _context.Contatos.Where(c => c.Ativo && c.Favorito && c.UsuarioId == usuarioId).ToListAsync();
-        }
-
-
-        public async Task AddContatoAsync(Contato contato)
-        {
-            _context.Contatos.Add(contato);
-            await _context.SaveChangesAsync();
-        }
-        public async Task UpdateContatoAsync(Contato contato)
-        {
-            _context.Contatos.Update(contato);
-            await _context.SaveChangesAsync();
-        }
-        public async Task DeleteContatoAsync(Contato contato)
-        {
-
-            _context.Contatos.Remove(contato);
-
-            await _context.SaveChangesAsync();
+           return await _context.Contatos.Where(c => 
+               c.Ativo && c.Favorito && c.UsuarioId == usuarioId).ToListAsync();
         }
 
         public async Task<List<Contato>> GetName(string Nome, Guid usuarioId)
         {
-           return await _context.Contatos.Where(c => c.UsuarioId == usuarioId && c.Nome.ToLower().StartsWith(Nome.ToLower())).ToListAsync();
-
+           return await _context.Contatos.Where(c =>
+                c.UsuarioId == usuarioId && c.Nome.ToLower().StartsWith(Nome.ToLower())).ToListAsync();
+            
         }
 
         public async Task<PaginacaoResponse<Contato>> ListaPaginadoAsync(Guid usuarioId, int pagina, int tamanhoPagina)
@@ -64,12 +95,12 @@ namespace API_AGENDA.Repository
             var query = _context.Contatos.Where(c => c.UsuarioId == usuarioId);
             
             var totalRegistros = await query.CountAsync();
-
+            
             var dados = await query.OrderBy(c => c.Nome)
                                    .Skip((pagina - 1) * tamanhoPagina)
                                    .Take(tamanhoPagina)
                                    .ToListAsync();
-
+            
             return new PaginacaoResponse<Contato>
             {
                 Pagina = pagina,

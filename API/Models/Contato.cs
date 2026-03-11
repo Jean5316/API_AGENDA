@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace API_AGENDA.Models
@@ -21,7 +22,7 @@ namespace API_AGENDA.Models
         public string Email { get; set; } = string.Empty;
 
 
-        public string Categoria { get; set; } = string.Empty;
+        public EnumCategorias Categoria { get; set; } = EnumCategorias.Padrao;
 
         public bool Favorito { get; set; } = false;
         public bool Ativo { get; set; } = true;
